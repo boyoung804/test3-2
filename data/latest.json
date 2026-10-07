@@ -1,0 +1,81 @@
+{
+  "date": "2026-10-08",
+  "collected_at": "2026-10-08T08:54:36.105581+09:00",
+  "agencies": [
+    "대통령실",
+    "국무조정실",
+    "재정경제부",
+    "교육부",
+    "과학기술정보통신부",
+    "외교부",
+    "통일부",
+    "법무부",
+    "국방부",
+    "행정안전부",
+    "국가보훈부",
+    "문화체육관광부",
+    "농림축산식품부",
+    "산업통상부",
+    "보건복지부",
+    "기후에너지환경부",
+    "고용노동부",
+    "성평등가족부",
+    "국토교통부",
+    "해양수산부",
+    "중소벤처기업부",
+    "국가데이터처",
+    "인사혁신처",
+    "법제처",
+    "식품의약품안전처"
+  ],
+  "items": [
+    {
+      "date": "2026-10-08",
+      "agency": "과학기술정보통신부",
+      "title": "반도체가 자라는 '시작점'까지 설계… 고집적·저전력 AI 반도체 구현의 새 길",
+      "summary": "KAIST·UNIST·한양대·TDS Innovation 연구팀, 2차원 반도체의 핵생성을 원하는 위치로 제어...네이처 게재",
+      "link": "https://www.korea.kr/briefing/pressReleaseView.do?newsId=156784602",
+      "unverified": false,
+      "media_press": "",
+      "media_title": "",
+      "media_link": "",
+      "media_checked_at": "2026-10-08T08:54:33.296447+09:00"
+    },
+    {
+      "date": "2026-10-08",
+      "agency": "문화체육관광부",
+      "title": "대한민국, 세계경제포럼 관광발전지수 '순위 1개 상승' 12위 기록",
+      "summary": "",
+      "link": "https://www.korea.kr/briefing/pressReleaseView.do?newsId=156784601",
+      "unverified": false,
+      "media_press": "",
+      "media_title": "",
+      "media_link": "",
+      "media_checked_at": "2026-10-08T08:23:12.143780+09:00"
+    },
+    {
+      "date": "2026-10-08",
+      "agency": "식품의약품안전처",
+      "title": "[보도참고] 식약처, K-뷰티 할랄 인증 세미나 및 교육 실시",
+      "summary": "",
+      "link": "https://www.korea.kr/briefing/pressReleaseView.do?newsId=156784600",
+      "unverified": false,
+      "media_press": "뉴시스",
+      "media_title": "\" K-뷰티 훨훨 날도록\"… 식약처, ' 할랄 ' 세미나 연다",
+      "media_link": "https://www.newsis.com/view/NISX20260609_0003661527",
+      "media_checked_at": "2026-10-08T08:06:35.605072+09:00"
+    },
+    {
+      "date": "2026-10-08",
+      "agency": "농림축산식품부",
+      "title": "고온에도 속 꽉 찬 배추 '청명가을' 대한민국 최고 품종 선정",
+      "summary": "고온에서도 안정적으로 속이 차는 배추 '청명가을'이 올해 대한민국 최고 품종으로 선정되어 대통령상을 받게 됐다. 흰녹병*에 강하고 연중 생산이 가능한 국화 '백강'은 국무총리상을 받는다.   * 병원균에 의해 식물의 잎 등에 흰색의 물집이 형성되어 생육을 저해하는 병해   국립종자원(원장 양주필)은 '2026 대한민국 우수품종 경진대회'를 통해 대통령상과 국무총리상, 농림축산식품부장관상 등 우수 품종 8개를 선정했다고 밝혔다.   올해로 22회째를 맞는 '대한민국 우수품종상'은 국내에서 육성된 우수 품종을 발굴·시상해 육종가와 종자",
+      "link": "https://www.korea.kr/briefing/pressReleaseView.do?newsId=156784598",
+      "unverified": false,
+      "media_press": "",
+      "media_title": "",
+      "media_link": "",
+      "media_checked_at": "2026-10-08T06:23:52.579317+09:00"
+    }
+  ]
+}
