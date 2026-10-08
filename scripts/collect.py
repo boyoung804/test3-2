@@ -40,6 +40,7 @@ GitHub Actions에서 5분마다 자동 실행됩니다 (.github/workflows/daily-
 """
 
 import json
+import random
 import re
 import sys
 import time
@@ -219,13 +220,17 @@ MEDIA_PRIORITY = ["연합뉴스", "뉴시스", "뉴스1"]
 
 # 네이버 뉴스 검색 "웹페이지" 요청용 헤더. API가 아니라 사람이 브라우저로 보는
 # search.naver.com 검색결과 페이지를 그대로 가져오는 것이라 키/가입이 필요 없다.
+# 주의: Referer를 "https://search.naver.com/"처럼 자기 자신으로 채워서 보내면
+# (실제 브라우저는 검색창에 처음 검색어를 칠 때 이런 self-referer를 보내지 않는다)
+# 오히려 조작된 요청이라는 신호로 보여 차단(HTTP 403) 확률을 높일 수 있다.
+# 실제로 잘 동작하는 다른 네이버 검색 스크래퍼도 Referer 없이 UA/Accept-Language만
+# 보내길래 동일하게 맞췄다.
 _SEARCH_HEADERS = {
     "User-Agent": (
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
         "(KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
     ),
-    "Accept-Language": "ko-KR,ko;q=0.9,en;q=0.8",
-    "Referer": "https://search.naver.com/",
+    "Accept-Language": "ko-KR,ko;q=0.9",
 }
 
 
@@ -363,7 +368,7 @@ def find_media_coverage(title: str, agency: str = ""):
     any_ok = False
     for q in queries:
         results = _naver_news_search(q)
-        time.sleep(1.0)  # 검색엔진 부담/차단 방지
+        time.sleep(random.uniform(2.0, 3.5))  # 검색엔진 부담/차단 방지 (간격을 넓히고 매번 랜덤화해 더 자연스럽게)
         if results is None:
             print(f"    - 네이버 검색 실패(차단/오류) [검색어: {q}]")
             continue
@@ -420,7 +425,7 @@ def enrich_with_media(items):
 # 그래서 한 번 매칭에 실패했다고 끝내지 않고, 최근 며칠치를 주기적으로 다시 확인한다.
 RECHECK_WINDOW_DAYS = 3        # 오늘 포함, 최근 며칠치까지 재확인 대상으로 볼지
 RECHECK_MIN_INTERVAL_HOURS = 3  # 같은 항목을 다시 확인하기까지 최소 대기 시간
-RECHECK_BATCH_LIMIT = 8         # 한 번 실행(5분)에서 재확인할 최대 건수 (검색엔진 부하 제한)
+RECHECK_BATCH_LIMIT = 4         # 한 번 실행(5분)에서 재확인할 최대 건수 (검색엔진 부하 제한, 짧은 시간에 몰아서 쏘지 않도록 축소)
 
 
 def recheck_pending_media(current_date: str) -> bool:
