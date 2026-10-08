@@ -252,6 +252,27 @@ def _clean_query(title: str) -> str:
     return q[:80]
 
 
+def _build_queries(title: str, agency: str):
+    """보도자료 제목 전체를 그대로 검색어로 쓰면 실제로 사람이 검색하는 방식과 달라서
+    (문장 전체 대 핵심어 몇 개) 네이버가 관련 기사를 놓치는 경우가 많다. 실제로
+    "기후에너지환경부 가습기살균제 참사 배상재원, 기후에너지환경부와 기업이 함께
+    책임진다"라는 긴 제목 그대로는 못 찾았던 연합뉴스 기사를, 사람이 쓴 "기후에너지환경부
+    가습기"라는 짧은 키워드 검색으로는 바로 찾은 사례가 있어 이렇게 바꿨다.
+
+    1순위: 기관명 + 제목의 첫 구절(쉼표·콜론·가운뎃점 앞부분) — 사람이 검색하는 방식과 가장 비슷.
+    2순위: 정제된 전체 제목 — 1순위로 못 찾았을 때 보강용으로 그대로 둔다."""
+    clean = _clean_query(title)
+    first_clause = re.split(r"[,:·]", clean)[0].strip()
+    queries = []
+    if agency and first_clause:
+        q1 = f"{agency} {first_clause}".strip()[:80]
+        if q1 and q1 not in queries:
+            queries.append(q1)
+    if clean and clean not in queries:
+        queries.append(clean)
+    return queries or [clean]
+
+
 def _naver_news_search(query: str):
     """네이버 뉴스 검색결과 웹페이지(search.naver.com)를 그대로 가져와
     [(언론사명, 기사제목, 링크, 미리보기문구), ...]로 돌려준다.
@@ -321,23 +342,49 @@ def _naver_news_search(query: str):
     return out
 
 
-def find_media_coverage(title: str):
+def _is_photo_article(link: str) -> bool:
+    """연합뉴스 포토(사진) 기사는 캡션 위주라 제목이 짧고 보도자료 제목과 거의
+    안 겹쳐서 글자쌍 유사도로는 거의 매칭되지 않지만, 혹시라도 우연히 기준을
+    넘겨 잘못 매칭되는 걸 막기 위해 후보에서 아예 제외한다.
+    연합뉴스 포토 기사 링크는 /view/PYH... 형태(사진·그래픽 전용 기사 ID 접두어)."""
+    return "/view/PYH" in link
+
+
+def find_media_coverage(title: str, agency: str = ""):
     """연합뉴스 > 뉴시스 > 뉴스1 순서로 실제 보도 기사를 찾는다.
-    네이버 뉴스 검색을 한 번만 호출해서(검색어 1개로 모든 언론사 결과가 같이 나오므로)
-    그 안에서 매체명으로 걸러 우선순위대로 확인하고, 제목 유사도가 기준
-    (_MATCH_THRESHOLD)에 못 미치면 '이 매체엔 없음'으로 보고 다음 매체로 넘어간다."""
-    query = _clean_query(title)
-    results = _naver_news_search(query)
-    time.sleep(1.0)  # 검색엔진 부담/차단 방지
-    if results is None:
-        print("    - 네이버 검색 실패(차단/오류)")
+    검색어를 두 단계로 시도한다: 먼저 기관명+제목 첫 구절(사람이 실제로 검색하는
+    방식과 비슷, _build_queries 참고), 그래도 부족하면 정제된 전체 제목으로 보강
+    검색한다. 두 검색 결과를 합쳐서 그 안에서 매체명으로 걸러 우선순위대로
+    확인하고, 제목 유사도가 기준(_MATCH_THRESHOLD)에 못 미치면 '이 매체엔 없음'으로
+    보고 다음 매체로 넘어간다."""
+    queries = _build_queries(title, agency)
+    seen_links = set()
+    merged = []
+    any_ok = False
+    for q in queries:
+        results = _naver_news_search(q)
+        time.sleep(1.0)  # 검색엔진 부담/차단 방지
+        if results is None:
+            print(f"    - 네이버 검색 실패(차단/오류) [검색어: {q}]")
+            continue
+        if not results:
+            print(f"    - 네이버 검색결과 없음 [검색어: {q}]")
+            continue
+        any_ok = True
+        for r in results:
+            if _is_photo_article(r[2]) or r[2] in seen_links:
+                continue
+            seen_links.add(r[2])
+            merged.append(r)
+
+    if not any_ok:
         return None
-    if not results:
-        print("    - 네이버 검색결과 없음")
+    if not merged:
+        print("    - 검색은 됐지만 쓸만한 후보가 없음 (포토 기사 제외 후 0건)")
         return None
 
     for press_name in MEDIA_PRIORITY:
-        candidates = [r for r in results if press_name in r[0]]
+        candidates = [r for r in merged if press_name in r[0]]
         if not candidates:
             print(f"    - {press_name}: 검색결과 없음")
             continue
@@ -356,7 +403,7 @@ def enrich_with_media(items):
     같은 항목을 재검색하지 않도록 한다."""
     now_iso = datetime.now(KST).isoformat()
     for it in items:
-        media = find_media_coverage(it["title"])
+        media = find_media_coverage(it["title"], it.get("agency", ""))
         it["media_checked_at"] = now_iso
         if media:
             it["media_press"] = media["press"]
@@ -418,7 +465,7 @@ def recheck_pending_media(current_date: str) -> bool:
     for d, idx in picked:
         it = day_items[d][idx]
         print(f"  - ({d}) {it['title'][:40]}")
-        media = find_media_coverage(it["title"])
+        media = find_media_coverage(it["title"], it.get("agency", ""))
         it["media_checked_at"] = now.isoformat()
         if media:
             it["media_press"] = media["press"]
