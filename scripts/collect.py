@@ -264,18 +264,50 @@ def _build_queries(title: str, agency: str):
     책임진다"라는 긴 제목 그대로는 못 찾았던 연합뉴스 기사를, 사람이 쓴 "기후에너지환경부
     가습기"라는 짧은 키워드 검색으로는 바로 찾은 사례가 있어 이렇게 바꿨다.
 
-    1순위: 기관명 + 제목의 첫 구절(쉼표·콜론·가운뎃점 앞부분) — 사람이 검색하는 방식과 가장 비슷.
-    2순위: 정제된 전체 제목 — 1순위로 못 찾았을 때 보강용으로 그대로 둔다."""
+    보도자료 제목은 보통 "[길게 수식하는 앞부분] + [핵심 결과를 나타내는 뒷부분]" 구조인데,
+    실제 언론 제목은 뒷부분(결과)과 따옴표로 묶인 고유명사(사업명·브랜드명 등)만 가져다
+    쓰는 경우가 많다. 예: 보도자료 "고온에도 속 꽉 찬 배추 '청명가을' 대한민국 최고 품종
+    선정" vs 실제 뉴시스 제목 "올해 대한민국 최고 품종은…'청명가을' 등 8개 선정" — "고온에도
+    속 꽉 찬 배추" 같은 앞부분 수식어는 기사 제목에 전혀 없다. 이런 수식어가 섞인 긴
+    문장을 그대로 검색어로 쓰면 네이버 관련도순에서 밀려 아예 결과에 안 뜨는 경우가 있어,
+    따옴표 안 고유명사 + 제목 끝부분(핵심 결과 어구)을 우선 검색어로 쓴다.
+
+    0순위: 기관명 + 따옴표 안 고유명사(있으면) + 제목 끝부분(핵심 결과 어구)
+    1순위: 기관명 + 제목의 첫 구절(쉼표·콜론·가운뎃점 앞부분) — 사람이 검색하는 방식과 비슷.
+    2순위: 정제된 전체 제목 — 앞선 시도로 못 찾았을 때 보강용으로 그대로 둔다.
+    최대 3개 검색어로 제한해 요청 수가 지나치게 늘지 않게 한다."""
+    # 원문(title)에서 작은/큰따옴표로 묶인 짧은 고유명사(사업명·브랜드명 등)를 뽑는다.
+    # 「」『』 같은 전각 괄호는 보통 제목 전체나 긴 구절을 감싸는 용도라(짧은 고유명사가
+    # 아님) 제외한다. _clean_query는 따옴표 문자 자체를 지워버리므로, 지우기 전
+    # 원문에서 뽑아야 한다.
+    quoted = re.findall(r"['‘’\"“”]([^'‘’\"“”]{2,12})['‘’\"“”]", title)
+
     clean = _clean_query(title)
+    words = clean.split()
+    tail = " ".join(words[-5:]) if len(words) > 5 else clean
     first_clause = re.split(r"[,:·]", clean)[0].strip()
+
     queries = []
+
+    def add(*parts: str):
+        seen_words = set()
+        out_words = []
+        for part in parts:
+            for w in part.split():
+                if w not in seen_words:
+                    seen_words.add(w)
+                    out_words.append(w)
+        q = " ".join(out_words)[:80]
+        if q and q not in queries:
+            queries.append(q)
+
+    if quoted:
+        add(agency, " ".join(quoted), tail)
     if agency and first_clause:
-        q1 = f"{agency} {first_clause}".strip()[:80]
-        if q1 and q1 not in queries:
-            queries.append(q1)
-    if clean and clean not in queries:
-        queries.append(clean)
-    return queries or [clean]
+        add(agency, first_clause)
+    if len(queries) < 3:
+        add(clean)
+    return queries[:3] or [clean]
 
 
 def _naver_news_search(query: str):
