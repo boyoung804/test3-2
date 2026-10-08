@@ -1,6 +1,6 @@
 {
   "date": "2026-10-08",
-  "collected_at": "2026-10-08T21:30:02.246052+09:00",
+  "collected_at": "2026-10-08T21:58:13.572759+09:00",
   "agencies": [
     "대통령실",
     "국무조정실",
@@ -29,6 +29,18 @@
     "식품의약품안전처"
   ],
   "items": [
+    {
+      "date": "2026-10-08",
+      "agency": "외교부",
+      "title": "외교부 공관장 인사",
+      "summary": "",
+      "link": "https://www.korea.kr/briefing/pressReleaseView.do?newsId=156784734",
+      "unverified": false,
+      "media_press": "연합뉴스",
+      "media_title": "박성준 \"5년간 외교부 퇴직 공직자 취업 심사 통과율 95.3%\"",
+      "media_link": "https://www.yna.co.kr/view/AKR20260930163000001?input=1195m",
+      "media_checked_at": "2026-10-08T21:57:32.229605+09:00"
+    },
     {
       "date": "2026-10-08",
       "agency": "외교부",
@@ -63,7 +75,7 @@
       "media_press": "",
       "media_title": "",
       "media_link": "",
-      "media_checked_at": "2026-10-08T18:46:32.247148+09:00"
+      "media_checked_at": "2026-10-08T21:57:41.038646+09:00"
     },
     {
       "date": "2026-10-08",
@@ -192,10 +204,10 @@
       "summary": "중앙장애인권익옹호기관-한국장애인고용공단, 학대 예방 및 권익 증진 위한 업무협약 체결",
       "link": "https://www.korea.kr/briefing/pressReleaseView.do?newsId=156784664",
       "unverified": false,
-      "media_press": "",
-      "media_title": "",
-      "media_link": "",
-      "media_checked_at": "2026-10-08T18:31:51.062570+09:00"
+      "media_press": "뉴시스",
+      "media_title": "장애인 다수 고용 사업장 학대 예방…관계기관 '맞손'",
+      "media_link": "https://www.newsis.com/view/NISX20261008_0003819422",
+      "media_checked_at": "2026-10-08T21:57:41.038646+09:00"
     },
     {
       "date": "2026-10-08",
@@ -399,7 +411,7 @@
       "media_press": "",
       "media_title": "",
       "media_link": "",
-      "media_checked_at": "2026-10-08T18:31:51.062570+09:00"
+      "media_checked_at": "2026-10-08T21:57:41.038646+09:00"
     },
     {
       "date": "2026-10-08",
@@ -519,7 +531,7 @@
       "media_press": "",
       "media_title": "",
       "media_link": "",
-      "media_checked_at": "2026-10-08T18:08:32.320352+09:00"
+      "media_checked_at": "2026-10-08T21:57:41.038646+09:00"
     },
     {
       "date": "2026-10-08",
