@@ -257,7 +257,7 @@ def _clean_query(title: str) -> str:
     return q[:80]
 
 
-def _build_queries(title: str, agency: str):
+def _build_queries(title: str, agency: str, summary: str = ""):
     """보도자료 제목 전체를 그대로 검색어로 쓰면 실제로 사람이 검색하는 방식과 달라서
     (문장 전체 대 핵심어 몇 개) 네이버가 관련 기사를 놓치는 경우가 많다. 실제로
     "기후에너지환경부 가습기살균제 참사 배상재원, 기후에너지환경부와 기업이 함께
@@ -276,14 +276,47 @@ def _build_queries(title: str, agency: str):
     아예 괄호/따옴표가 하나도 없는 제목도 많다. 따옴표 유무와 상관없이 "제목 끝부분
     (핵심 결과 어구)"은 항상 유용한 검색어라, 이제 따옴표가 있든 없든 매번 시도한다.
 
-    0순위: 기관명 + 따옴표/전각괄호 안 고유명사(있으면) + 제목 끝부분
-    1순위: 기관명 + 제목 끝부분(마지막 5단어 안팎) — 따옴표/괄호가 없어도 항상 시도.
-    2순위: 기관명 + 제목의 첫 구절(쉼표·콜론·가운뎃점 앞부분) — 사람이 검색하는 방식과 비슷.
-    3순위: 정제된 전체 제목 — 앞선 시도로 못 찾았을 때 보강용으로 그대로 둔다.
+    0순위: 기관명 + 요약문(summary) 속 따옴표/전각괄호 안 사업명(있으면) — 제목이 "반려동물과의
+    마지막 동행까지 함께합니다"처럼 감성적인 문구라 핵심 사업명이 제목에 아예 없고 본문
+    요약에만 "「펫로스 심리지원 프로그램」"처럼 박혀있는 경우가 실제로 있었다. 기사 제목은
+    보통 이런 "진짜 사업명"을 쓰지, 보도자료의 홍보성 제목을 그대로 쓰지 않는다.
+    1순위: 기관명 + 제목 속 따옴표/전각괄호 안 고유명사(있으면) + 제목 끝부분
+    2순위: 기관명 + 제목 끝부분(마지막 5단어 안팎) — 따옴표/괄호가 없어도 항상 시도.
+    3순위: 기관명 + 제목의 첫 구절(쉼표·콜론·가운뎃점 앞부분) — 사람이 검색하는 방식과 비슷.
+    4순위: 정제된 전체 제목 — 앞선 시도로 못 찾았을 때 보강용으로 그대로 둔다.
     최대 3개 검색어로 제한해 요청 수가 지나치게 늘지 않게 한다(우선순위 순으로 3개 채움)."""
-    # 원문(title)에서 따옴표나 전각괄호로 묶인 짧은 고유명사(사업명·브랜드명 등)를 뽑는다.
+    # 원문(제목/요약문)에서 따옴표나 전각괄호로 묶인 고유명사(사업명·브랜드명 등)를 뽑는다.
     # _clean_query는 이 문자들을 전부 지워버리므로, 지우기 전 원문에서 뽑아야 한다.
-    quoted = re.findall(r"['‘’\"“”「『]([^'‘’\"“”」』]{2,20})['’\"”」』]", title)
+    # 길이 상한을 20자에서 40자로 늘렸다: "데이터 기반 연근해어업 관리 체계 혁신 방안"처럼
+    # 정책/사업명이 20자를 넘는 경우가 실제로 있어서, 20자로 제한하면 이런 핵심 문구가
+    # 통째로 추출 대상에서 빠지는 문제가 있었다.
+    #
+    # 괄호/따옴표 종류를 섞어서 매칭하면(예: 여는 ' 과 닫는 」를 한 쌍으로 착각) 전혀
+    # 엉뚱한 범위가 뽑히는 버그가 있었다(외교부 사례: "...재구성(...)'이라는 주제로
+    # 「제8차 한-아세안..." 에서 '...'가 길어서(40자 넘음) 매칭 실패하자, 그 닫는 '를
+    # 엉뚱하게 뒤에 나오는 「...」의 여는 따옴표로 착각해 "이라는 주제로 「제8차..."처럼
+    # 짝이 안 맞는 텍스트를 뽑아버렸다). 그래서 종류별로 짝을 맞춰 따로 매칭한다.
+    _QUOTE_PAIRS = [("'", "'"), ('"', '"'), ("‘", "’"), ("“", "”"), ("「", "」"), ("『", "』")]
+
+    def _extract_quoted(text: str):
+        text = text or ""
+        matches = []  # (start, end, content)
+        for open_c, close_c in _QUOTE_PAIRS:
+            pat = re.escape(open_c) + f"([^{re.escape(open_c)}{re.escape(close_c)}]{{2,40}})" + re.escape(close_c)
+            for m in re.finditer(pat, text):
+                # "(이하 '농식품부')", "(이하, '시범사업')"처럼 공식 문서에서 흔한
+                # "약칭 정의"용 따옴표는 진짜 사업명이 아니라 그냥 줄임말 정의라서
+                # 검색어로 뽑으면 오히려 핵심어가 희석된다(실제로 "농어촌 기본소득
+                # 시범사업" 대신 "시범사업"만 뽑혀서 검색어가 너무 뭉툭해진 사례가
+                # 있었다). 바로 앞에 "이하"가 붙은 따옴표는 제외한다.
+                if re.search(r"이하[,\s]*$", text[:m.start()]):
+                    continue
+                matches.append((m.start(), m.end(), m.group(1)))
+        matches.sort(key=lambda t: t[0])
+        return [content for _, _, content in matches]
+
+    quoted_title = _extract_quoted(title)
+    quoted_summary = _extract_quoted(summary or "")
 
     clean = _clean_query(title)
     words = clean.split()
@@ -304,8 +337,10 @@ def _build_queries(title: str, agency: str):
         if q and q not in queries:
             queries.append(q)
 
-    if quoted:
-        add(agency, " ".join(quoted), tail)
+    if quoted_summary:
+        add(agency, " ".join(quoted_summary))
+    if len(queries) < 3 and quoted_title:
+        add(agency, " ".join(quoted_title), tail)
     if len(queries) < 3 and tail:
         add(agency, tail)
     if len(queries) < 3 and agency and first_clause:
@@ -396,14 +431,14 @@ def _is_photo_article(link: str) -> bool:
     return "/view/PYH" in link
 
 
-def find_media_coverage(title: str, agency: str = ""):
+def find_media_coverage(title: str, agency: str = "", summary: str = ""):
     """연합뉴스 > 뉴시스 > 뉴스1 순서로 실제 보도 기사를 찾는다.
-    검색어를 두 단계로 시도한다: 먼저 기관명+제목 첫 구절(사람이 실제로 검색하는
-    방식과 비슷, _build_queries 참고), 그래도 부족하면 정제된 전체 제목으로 보강
-    검색한다. 두 검색 결과를 합쳐서 그 안에서 매체명으로 걸러 우선순위대로
-    확인하고, 제목 유사도가 기준(_MATCH_THRESHOLD)에 못 미치면 '이 매체엔 없음'으로
-    보고 다음 매체로 넘어간다."""
-    queries = _build_queries(title, agency)
+    검색어를 여러 단계로 시도한다: 요약문/제목 속 따옴표·전각괄호 핵심어 → 제목
+    끝부분 → 기관명+제목 첫 구절(사람이 실제로 검색하는 방식과 비슷) → 정제된
+    전체 제목(_build_queries 참고). 검색 결과를 합쳐서 그 안에서 매체명으로 걸러
+    우선순위대로 확인하고, 제목 유사도가 기준(_MATCH_THRESHOLD)에 못 미치면
+    '이 매체엔 없음'으로 보고 다음 매체로 넘어간다."""
+    queries = _build_queries(title, agency, summary)
     seen_links = set()
     merged = []
     any_ok = False
@@ -449,7 +484,7 @@ def enrich_with_media(items):
     같은 항목을 재검색하지 않도록 한다."""
     now_iso = datetime.now(KST).isoformat()
     for it in items:
-        media = find_media_coverage(it["title"], it.get("agency", ""))
+        media = find_media_coverage(it["title"], it.get("agency", ""), it.get("summary", ""))
         it["media_checked_at"] = now_iso
         if media:
             it["media_press"] = media["press"]
@@ -511,7 +546,7 @@ def recheck_pending_media(current_date: str) -> bool:
     for d, idx in picked:
         it = day_items[d][idx]
         print(f"  - ({d}) {it['title'][:40]}")
-        media = find_media_coverage(it["title"], it.get("agency", ""))
+        media = find_media_coverage(it["title"], it.get("agency", ""), it.get("summary", ""))
         it["media_checked_at"] = now.isoformat()
         if media:
             it["media_press"] = media["press"]
