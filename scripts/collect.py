@@ -235,6 +235,7 @@ _SEARCH_HEADERS = {
 
 
 _MATCH_THRESHOLD = 0.2   # 보도자료 제목의 글자쌍이 검색결과(제목+요약문)에 이 비율 이상 들어있어야 같은 기사로 인정 (너무 높이면 실제 기사도 놓침)
+_MATCH_TITLE_MIN = 0.08  # 제목만 비교했을 때 최소 이 정도는 겹쳐야 함 (미리보기 문구만으로 통과하는 오탐 방지용 하한선)
 
 
 def _bigrams(text: str):
@@ -401,13 +402,21 @@ def _naver_news_search(query: str):
     body_anchors = soup.select('a[data-heatmap-target=".body"]')
 
     if not title_anchors:
-        # 선택자가 지금 네이버 페이지 구조와 안 맞거나, 봇 탐지로 다른 페이지를 받은 경우.
-        # 실제로 뭘 받았는지 다음 실행 로그에서 바로 보이도록 진단 정보를 남긴다.
-        body_snippet = re.sub(r"\s+", " ", soup.get_text(" ", strip=True))[:200]
+        # 선택자가 지금 네이버 페이지 구조와 안 맞거나, 봇 탐지로 다른 페이지를 받은 경우,
+        # 아니면 정말로 그 검색어에 뉴스 결과가 하나도 없는 경우(이것도 정상적인 상황)다.
+        # 예전엔 본문 앞 200자만 잘라서 남겨서, 그게 메뉴/탭 이름에서 바로 끊겨버리면
+        # "진짜 결과 없음"인지 "선택자가 깨짐"인지 구분이 안 됐다. 그래서 네이버가 실제로
+        # 쓰는 "검색결과가 없습니다" 안내문구가 있는지부터 명시적으로 확인하고, 본문
+        # 스니펫도 800자로 늘려서 더 뒤쪽(진짜 본문이 있다면 그 부분)까지 보이게 한다.
+        full_text = re.sub(r"\s+", " ", soup.get_text(" ", strip=True))
+        no_result_phrases = ["에 대한 검색결과가 없습니다", "검색결과가 없습니다", "다른 검색어로 찾아보세요"]
+        genuinely_empty = any(p in full_text for p in no_result_phrases)
+        body_snippet = full_text[:800]
         title_tag = soup.title.get_text(strip=True) if soup.title else "(없음)"
         print(
-            f"    [검색진단] 네이버: 제목링크 0개 / 최종URL={resp.url} / "
-            f"응답길이={len(resp.text)}자 / <title>={title_tag} / 본문일부=\"{body_snippet}\"",
+            f"    [검색진단] 네이버: 제목링크 0개 / 진짜결과없음={genuinely_empty} / "
+            f"최종URL={resp.url} / 응답길이={len(resp.text)}자 / <title>={title_tag} / "
+            f"본문일부=\"{body_snippet}\"",
             file=sys.stderr,
         )
 
@@ -476,9 +485,18 @@ def find_media_coverage(title: str, agency: str = "", summary: str = ""):
             print(f"    - {press_name}: 검색결과 없음")
             continue
         best = max(candidates, key=lambda r: _match_score(title, r[1] + " " + r[3]))
-        score = _match_score(title, best[1] + " " + best[3])
-        print(f"    - {press_name}: 후보 {len(candidates)}건, 최고 유사도 {score:.2f}")
-        if score >= _MATCH_THRESHOLD:
+        title_only_score = _match_score(title, best[1])
+        combined_score = _match_score(title, best[1] + " " + best[3])
+        print(
+            f"    - {press_name}: 후보 {len(candidates)}건, "
+            f"제목단독유사도 {title_only_score:.2f} / 제목+미리보기유사도 {combined_score:.2f}"
+        )
+        # 미리보기 문구(desc)는 날짜·조사 같은 짧은 공통 조각만으로도 우연히
+        # 겹칠 수 있어서(실제로 "주한외교단, 강원의 매력에 빠지다"가 전혀
+        # 무관한 중동 뉴스와 매칭된 사례가 있었음), 제목만 비교한 유사도가
+        # 최소한 어느 정도는 있어야(=실제로 같은 사안을 가리켜야) 인정한다.
+        # 제목 자체는 전혀 안 겹치는데 미리보기 문구만으로 기준을 넘는 경우를 막는 게 목적.
+        if combined_score >= _MATCH_THRESHOLD and title_only_score >= _MATCH_TITLE_MIN:
             return {"press": press_name, "title": best[1][:200], "link": best[2]}
     return None
 
