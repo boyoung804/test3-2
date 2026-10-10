@@ -370,11 +370,13 @@ def _naver_news_search(query: str):
     try:
         resp = requests.get(
             "https://search.naver.com/search.naver",
-            # sort=1(최신순): 관련도순(기본값)은 검색어와 "문장으로서" 더 비슷한 과거 기사를
-            # 위로 올릴 때가 있어, 보도자료 나온 지 얼마 안 된 최신 기사가 1페이지 밖으로
-            # 밀려날 수 있다. 우리는 항상 "최근에 나온" 기사를 찾는 것이므로 최신순이 더
-            # 안전하다(실제로 잘 동작하는 다른 네이버 검색 스크래퍼도 sort=1을 쓴다).
-            params={"where": "news", "query": query, "sort": "1"},
+            # sort=1(최신순)을 한 번 시도했었는데, 추가한 직후부터 전혀 무관한 여러
+            # 검색어에서 동시에 제목링크 0개가 떴다(실제로 존재할 법한 "외교부 제8차
+            # 한-아세안 싱크탱크 전략대화" 같은 공식 행사명까지 0건). sort=1이 걸린
+            # 결과 페이지는 관련도순(기본값)과 다른 템플릿을 내려줄 가능성이 있어
+            # (아래 선택자가 그 템플릿엔 안 맞을 수 있음), 원인이 분명해질 때까지는
+            # 안전하게 기본 정렬(관련도순)로 되돌린다.
+            params={"where": "news", "query": query},
             headers=_SEARCH_HEADERS,
             timeout=10,
         )
@@ -390,8 +392,12 @@ def _naver_news_search(query: str):
     for span in soup.select("span.fender-ui_0cb57fb2"):
         span.decompose()
 
-    title_anchors = soup.select('a[data-heatmap-target=".tit"]')
-    press_spans = soup.select("span.sds-comps-profile-info-title-text")
+    # 템플릿이 살짝 바뀌어도 깨지지 않도록 선택자를 조금 더 느슨하게 잡는다:
+    # - 제목 링크: 새 컴포넌트(data-heatmap-target)뿐 아니라 구버전 class(a.news_tit)도 같이 본다.
+    # - 언론사명: 정확한 전체 class명 대신 "profile-info-title-text"를 포함하는 class를
+    #   찾는다([class*=...]) — 네이버가 해시 접미사만 살짝 바꿔도 안 깨지게.
+    title_anchors = soup.select('a[data-heatmap-target=".tit"], a.news_tit')
+    press_spans = soup.select('[class*="profile-info-title-text"]')
     body_anchors = soup.select('a[data-heatmap-target=".body"]')
 
     if not title_anchors:
