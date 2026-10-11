@@ -56,8 +56,8 @@
   .media-link { display:inline-block; margin-top:10px; font-size:12.5px; font-weight:600; color:#fff; background:var(--accent);
     padding:6px 12px; border-radius:8px; text-decoration:none; }
   .media-link:hover { background:#1d4ed8; }
-  .media-preview { margin-top:8px; font-size:12.5px; color:var(--text-secondary); display:flex; gap:6px; align-items:flex-start; }
-  .media-preview .mp-press { flex:0 0 auto; font-weight:700; color:var(--accent); }
+  .media-preview { margin-top:8px; font-size:14px; font-weight:700; color:var(--text-primary); display:flex; gap:6px; align-items:flex-start; }
+  .media-preview .mp-press { flex:0 0 auto; color:var(--accent); }
   .media-preview .mp-title { flex:1; }
   .latest-list { display:flex; flex-direction:column; gap:12px; }
   .view-toggle { display:inline-flex; border:1px solid var(--border); border-radius:8px; overflow:hidden; background:#fff; }
@@ -116,6 +116,11 @@
   .match-option .opt-media { font-size:11.5px; color:var(--text-secondary); }
   .match-option.disabled { opacity:.4; pointer-events:none; }
   #match-modal-empty { text-align:center; color:var(--text-secondary); font-size:13px; padding:24px 0; }
+  .manual-entry-divider { text-align:center; font-size:12px; color:var(--text-secondary); margin:16px 0 10px;
+    display:flex; align-items:center; gap:8px; }
+  .manual-entry-divider::before, .manual-entry-divider::after { content:""; flex:1; height:1px; background:var(--border); }
+  .manual-entry-form { display:flex; flex-direction:column; gap:8px; margin-bottom:4px; }
+  .manual-entry-form input { padding:10px 12px; border:1px solid var(--border); border-radius:10px; font-size:14px; }
   .modal-actions { display:flex; gap:8px; margin-top:12px; }
   .modal-actions button { flex:1; padding:10px; border-radius:10px; border:1px solid var(--border); background:#fff; font-size:13.5px; cursor:pointer; }
   .modal-actions .clear-btn { color:var(--danger); border-color:#fecaca; }
@@ -193,7 +198,16 @@
     <h3>이 보도자료에 연결할 기사를 고르세요</h3>
     <p class="modal-pr-title" id="match-modal-pr-title"></p>
     <div id="match-modal-options"></div>
-    <div id="match-modal-empty" style="display:none;">연결할 수 있는 기사후보가 없습니다. 먼저 "기사 업로드"로 엑셀을 올려주세요.</div>
+    <div id="match-modal-empty" style="display:none;">연결할 수 있는 기사후보가 없습니다. 아래에서 직접 입력해 주세요.</div>
+
+    <div class="manual-entry-divider">또는 직접 입력</div>
+    <div class="manual-entry-form">
+      <input type="text" id="manual-entry-press" placeholder="매체명 (예: 연합뉴스)">
+      <input type="text" id="manual-entry-title" placeholder="기사 제목">
+      <input type="text" id="manual-entry-url" placeholder="기사 URL (https://...)">
+      <button id="manual-entry-submit" class="primary-btn" style="width:100%;">이 내용으로 등록</button>
+    </div>
+
     <div class="modal-actions">
       <button id="match-modal-clear" class="clear-btn">매칭 해제</button>
       <button id="match-modal-cancel">닫기</button>
@@ -403,6 +417,11 @@
         </div>`).join('');
       $('match-modal-options').dataset._options = JSON.stringify(options.map(o => o.c));
     }
+    // 직접 입력 칸은 이전 보도자료에서 입력하던 내용이 남아있지 않도록 매번 비운다.
+    // 이미 매칭된 기사를 고치는 거면(기사 수정), 지금 값으로 미리 채워줘서 바로 수정하기 편하게 한다.
+    $('manual-entry-press').value = item.media_press || '';
+    $('manual-entry-title').value = item.media_title || '';
+    $('manual-entry-url').value = item.media_link || '';
     $('match-modal-overlay').classList.add('open');
   }
   function closeMatchModal() { $('match-modal-overlay').classList.remove('open'); matchModalItemLink = null; }
@@ -427,6 +446,21 @@
     saveManual(manualMedia);
     const item = currentItems.find(r => r.link === matchModalItemLink);
     if (item) { item.media_press = ''; item.media_title = ''; item.media_link = ''; }
+    closeMatchModal();
+    render();
+  });
+  $('manual-entry-submit').addEventListener('click', () => {
+    if (!matchModalItemLink) return;
+    const press = $('manual-entry-press').value.trim();
+    const mtitle = $('manual-entry-title').value.trim();
+    const url = $('manual-entry-url').value.trim();
+    if (!mtitle || !url) { alert('기사 제목과 URL은 꼭 입력해 주세요.'); return; }
+    if (!/^https?:\/\//i.test(url)) { alert('URL은 http(s)://로 시작해야 해요.'); return; }
+    const entry = { press: press || '기타', title: mtitle, link: url };
+    manualMedia[matchModalItemLink] = entry;
+    saveManual(manualMedia);
+    const item = currentItems.find(r => r.link === matchModalItemLink);
+    if (item) { item.media_press = entry.press; item.media_title = entry.title; item.media_link = entry.link; }
     closeMatchModal();
     render();
   });
