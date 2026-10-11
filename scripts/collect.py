@@ -323,6 +323,16 @@ def _build_queries(title: str, agency: str, summary: str = ""):
     words = clean.split()
     tail = " ".join(words[-5:]) if len(words) > 5 else clean
     first_clause = re.split(r"[,:·]", clean)[0].strip()
+    # 제목 맨 앞 1~2어절("고준위 방사성폐기물...")은 보통 이 보도자료의 핵심 주제/기관명이고,
+    # 기관명이나 다른 수식어 없이 그 자체로 검색하면 네이버에서 훨씬 폭넓게(=느슨하게) 걸린다.
+    # 실제로 "고준위 방사성폐기물 관리위원회 출범 1년, 50년 국가 난제 해결의 기틀 다져"는
+    # "기관명+전체 구절"로 검색하면 정작 실린 기사(제목이 "후보부지 내년 공모..."처럼
+    # 전혀 다르게 뽑힌 기사)가 결과에 안 걸렸는데, "고준위"만 검색하면 바로 나왔다 —
+    # 즉 쿼리가 길고 구체적일수록 오히려 recall(재현율)이 떨어지는 경우가 있다.
+    # 그래서 기관명 없이 앞쪽 핵심어만 짧게 뽑은 쿼리를 최우선으로 하나 추가한다.
+    # (오탐은 _MATCH_TITLE_MIN/_MATCH_THRESHOLD 점수 필터링이 걸러주므로, 쿼리를
+    # 넓게 잡는 것 자체는 위험하지 않다.)
+    lead_phrase = " ".join(words[:2]) if len(words) >= 2 else clean
 
     queries = []
 
@@ -340,12 +350,14 @@ def _build_queries(title: str, agency: str, summary: str = ""):
 
     if quoted_summary:
         add(agency, " ".join(quoted_summary))
+    if len(queries) < 3 and lead_phrase:
+        add(lead_phrase)
     if len(queries) < 3 and quoted_title:
         add(agency, " ".join(quoted_title), tail)
-    if len(queries) < 3 and tail:
-        add(agency, tail)
     if len(queries) < 3 and agency and first_clause:
         add(agency, first_clause)
+    if len(queries) < 3 and tail:
+        add(agency, tail)
     if len(queries) < 3:
         add(clean)
     return queries[:3] or [clean]
