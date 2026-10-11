@@ -374,6 +374,40 @@ def _build_queries(title: str, agency: str, summary: str = ""):
     return queries[:3] or [clean]
 
 
+_REL_DATE_PATTERNS = [
+    (re.compile(r"(\d+)\s*분\s*전"), lambda m, now: now.date()),
+    (re.compile(r"(\d+)\s*시간\s*전"), lambda m, now: now.date()),
+    (re.compile(r"(\d+)\s*일\s*전"), lambda m, now: (now - timedelta(days=int(m.group(1)))).date()),
+    (re.compile(r"어제"), lambda m, now: (now - timedelta(days=1)).date()),
+    (re.compile(r"오늘"), lambda m, now: now.date()),
+    (re.compile(r"(\d{4})\.\s*(\d{1,2})\.\s*(\d{1,2})\."),
+     lambda m, now: datetime(int(m.group(1)), int(m.group(2)), int(m.group(3))).date()),
+]
+
+
+def _extract_result_date(title_anchor, now_kst):
+    """네이버 뉴스 검색결과에서 각 기사의 "N일 전"/"YYYY.MM.DD." 같은 날짜 표시를
+    찾아서 실제 날짜로 변환한다. 정확한 class명이 아니라, 제목 링크의 조상 블록을
+    몇 단계 거슬러 올라가며 텍스트에서 날짜 패턴을 정규식으로 찾는 방식이라, 네이버가
+    class명을 또 해시값으로 바꿔도(지금까지 두 번 그랬다) 잘 안 깨진다. 날짜를 못
+    찾으면 None을 돌려주고, 호출하는 쪽에서는 "모르면 걸러내지 않는다"로 처리해서
+    이 함수가 오작동해도 매칭 자체가 완전히 막히지는 않게 한다."""
+    node = title_anchor
+    for _ in range(4):
+        node = node.find_parent()
+        if node is None:
+            break
+        text = node.get_text(" ", strip=True)
+        for pat, to_date in _REL_DATE_PATTERNS:
+            m = pat.search(text)
+            if m:
+                try:
+                    return to_date(m, now_kst)
+                except ValueError:
+                    continue
+    return None
+
+
 def _naver_news_search(query: str):
     """네이버 뉴스 검색결과 웹페이지(search.naver.com)를 그대로 가져와
     [(언론사명, 기사제목, 링크, 미리보기문구), ...]로 돌려준다.
@@ -449,6 +483,7 @@ def _naver_news_search(query: str):
         if href and href not in desc_by_link:
             desc_by_link[href] = body_a.get_text(" ", strip=True)
 
+    now_kst = datetime.now(KST)
     out = []
     for i, title_a in enumerate(title_anchors):
         title = title_a.get_text(" ", strip=True)
@@ -457,7 +492,8 @@ def _naver_news_search(query: str):
             continue
         press = press_spans[i].get_text(" ", strip=True) if i < len(press_spans) else ""
         desc = desc_by_link.get(link, "")
-        out.append((press, title, link, desc))
+        result_date = _extract_result_date(title_a, now_kst)
+        out.append((press, title, link, desc, result_date))
     return out
 
 
@@ -469,13 +505,19 @@ def _is_photo_article(link: str) -> bool:
     return "/view/PYH" in link
 
 
-def find_media_coverage(title: str, agency: str = "", summary: str = ""):
+def find_media_coverage(title: str, agency: str = "", summary: str = "", pr_date: str = ""):
     """연합뉴스 > 뉴시스 > 뉴스1 순서로 실제 보도 기사를 찾는다.
     검색어를 여러 단계로 시도한다: 요약문/제목 속 따옴표·전각괄호 핵심어 → 제목
     끝부분 → 기관명+제목 첫 구절(사람이 실제로 검색하는 방식과 비슷) → 정제된
     전체 제목(_build_queries 참고). 검색 결과를 합쳐서 그 안에서 매체명으로 걸러
     우선순위대로 확인하고, 제목 유사도가 기준(_MATCH_THRESHOLD)에 못 미치면
-    '이 매체엔 없음'으로 보고 다음 매체로 넘어간다."""
+    '이 매체엔 없음'으로 보고 다음 매체로 넘어간다.
+
+    pr_date(보도자료 날짜, "YYYY-MM-DD")가 주어지면, 검색결과에서 날짜를 읽어낼 수
+    있었던 후보 중 보도자료와 날짜가 다른 건 제외한다(당일 보도자료인데 몇 주 전
+    기사가 엉뚱하게 잡히는 걸 막기 위함). 날짜를 못 읽은 후보는 "모른다"로 보고
+    걸러내지 않는다 — 날짜 추출 자체가 선택자 문제로 실패할 수 있어서, 모른다고
+    무조건 버리면 멀쩡한 매칭까지 다 막힐 수 있기 때문이다."""
     queries = _build_queries(title, agency, summary)
     seen_links = set()
     merged = []
