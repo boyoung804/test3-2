@@ -234,12 +234,44 @@ _SEARCH_HEADERS = {
 }
 
 
-_MATCH_THRESHOLD = 0.12  # 보도자료 제목의 글자쌍이 검색결과(제목+요약문)에 이 비율 이상 들어있어야 같은 기사로 인정
-# (원래 0.2였는데, 기자가 제목을 완전히 다른 포인트로 뽑는 경우(예: 보도자료 제목은
-# "...출범 1년..."인데 실제 기사 제목은 "...후보부지 내년 공모..."로, 같은 사안인데
-# 제목 유사도가 9.7%밖에 안 나오는 사례가 있었음) 너무 엄격해서 진짜 기사도 놓쳤다.
-# 오탐 방지는 아래 _MATCH_TITLE_MIN(제목 단독 최소 기준)이 따로 걸어준다.)
-_MATCH_TITLE_MIN = 0.08  # 제목만 비교했을 때 최소 이 정도는 겹쳐야 함 (미리보기 문구만으로 통과하는 오탐 방지용 하한선)
+_MATCH_TITLE_MIN = 0.08  # 제목만 비교했을 때 최소 이 정도는 겹쳐야 검증 단계로 넘어감 (완전 무관한 후보를 1차로 거름)
+_MATCH_BODY_MIN = 0.12   # 기사 원문(본문)까지 가져와서 보도자료 제목+요약문과 비교한 유사도 기준 (주 판정 기준)
+_MATCH_THRESHOLD = 0.18  # 기사 원문을 못 가져왔을 때(차단/오류)만 쓰는 대체 기준 — 제목+미리보기 문구만으로 판단
+# (제목만 비교하면 "출범 1년" vs "후보부지 내년 공모"처럼 같은 사안인데 기자가 전혀
+# 다른 포인트로 제목을 뽑아 유사도가 9.7%까지 떨어지는 경우를 놓치고, 반대로 네이버
+# 미리보기 문구(desc)만 보고 판단하면 날짜·조사 같은 공통 조각만으로 전혀 무관한
+# 기사가 잘못 걸리는 경우(주한외교단↔중동뉴스, 근로복지공단↔9/21 기사)가 있었다.
+# 그래서 제목만으로 1차로 "아예 무관한 건 아닌지"만 걸러내고(_MATCH_TITLE_MIN),
+# 통과한 후보는 실제 기사 본문까지 가져와서(_fetch_article_text) 보도자료 요약문과
+# 비교한다 — 같은 사안을 다룬 기사라면 제목 표현이 달라도 본문 내용은 많이
+# 겹치고, 전혀 무관한 기사라면 본문까지 가져와도 거의 안 겹치므로 훨씬 믿을 만하다.
+# 기사 원문 접속이 막히거나 실패하면 어쩔 수 없이 기존 방식(제목+미리보기)으로
+# 대체 판단한다.)
+
+
+def _fetch_article_text(link: str, timeout: int = 8) -> str:
+    """기사 원문 페이지를 가져와 본문 비교용 텍스트를 뽑는다. meta description(또는
+    og:description)과 본문 앞쪽 문단 몇 개를 합쳐서 쓴다 — 언론사마다 본문 class가
+    달라서 정교하게 긁기보다, 이 정도면 보도자료 요약문과 비교하기에 충분하다.
+    접속 실패/차단이면 빈 문자열을 돌려주고, 호출하는 쪽에서 기존 방식으로 대체한다."""
+    try:
+        resp = requests.get(link, headers=_SEARCH_HEADERS, timeout=timeout)
+    except requests.RequestException:
+        return ""
+    if resp.status_code != 200:
+        return ""
+    try:
+        soup = BeautifulSoup(resp.text, "html.parser")
+    except Exception:
+        return ""
+    parts = []
+    for attrs in ({"name": "description"}, {"property": "og:description"}):
+        tag = soup.find("meta", attrs=attrs)
+        if tag and tag.get("content"):
+            parts.append(tag["content"])
+    paragraphs = soup.find_all("p")
+    parts.append(" ".join(p.get_text(" ", strip=True) for p in paragraphs[:15]))
+    return re.sub(r"\s+", " ", " ".join(parts)).strip()[:1500]
 
 
 def _bigrams(text: str):
@@ -544,25 +576,52 @@ def find_media_coverage(title: str, agency: str = "", summary: str = "", pr_date
         print("    - 검색은 됐지만 쓸만한 후보가 없음 (포토 기사 제외 후 0건)")
         return None
 
+    pr_date_obj = None
+    if pr_date:
+        try:
+            pr_date_obj = datetime.strptime(pr_date, "%Y-%m-%d").date()
+        except ValueError:
+            pr_date_obj = None
+
     for press_name in MEDIA_PRIORITY:
         candidates = [r for r in merged if press_name in r[0]]
         if not candidates:
             print(f"    - {press_name}: 검색결과 없음")
             continue
+        if pr_date_obj:
+            before = len(candidates)
+            # 날짜를 읽어낸 후보 중 보도자료와 날짜가 다른 건 제외. 날짜를 못 읽은
+            # 후보(result_date=None)는 걸러내지 않고 그대로 둔다(위 함수 설명 참고).
+            candidates = [r for r in candidates if r[4] is None or r[4] == pr_date_obj]
+            dropped = before - len(candidates)
+            if dropped:
+                print(f"    - {press_name}: 날짜 불일치로 {dropped}건 제외")
+            if not candidates:
+                print(f"    - {press_name}: 날짜 일치 후보 없음")
+                continue
         best = max(candidates, key=lambda r: _match_score(title, r[1] + " " + r[3]))
         title_only_score = _match_score(title, best[1])
-        combined_score = _match_score(title, best[1] + " " + best[3])
-        print(
-            f"    - {press_name}: 후보 {len(candidates)}건, "
-            f"제목단독유사도 {title_only_score:.2f} / 제목+미리보기유사도 {combined_score:.2f}"
-        )
-        # 미리보기 문구(desc)는 날짜·조사 같은 짧은 공통 조각만으로도 우연히
-        # 겹칠 수 있어서(실제로 "주한외교단, 강원의 매력에 빠지다"가 전혀
-        # 무관한 중동 뉴스와 매칭된 사례가 있었음), 제목만 비교한 유사도가
-        # 최소한 어느 정도는 있어야(=실제로 같은 사안을 가리켜야) 인정한다.
-        # 제목 자체는 전혀 안 겹치는데 미리보기 문구만으로 기준을 넘는 경우를 막는 게 목적.
-        if combined_score >= _MATCH_THRESHOLD and title_only_score >= _MATCH_TITLE_MIN:
-            return {"press": press_name, "title": best[1][:200], "link": best[2]}
+        print(f"    - {press_name}: 후보 {len(candidates)}건, 제목단독유사도 {title_only_score:.2f}")
+        # 1차 관문: 제목끼리 아예 무관하면(예: 주한외교단↔중동뉴스, 0.0) 본문까지
+        # 가져올 필요도 없이 바로 걸러낸다.
+        if title_only_score < _MATCH_TITLE_MIN:
+            print(f"    - {press_name}: 제목단독유사도 기준 미달로 제외")
+            continue
+
+        article_text = _fetch_article_text(best[2])
+        time.sleep(random.uniform(1.0, 2.0))  # 언론사 사이트에도 예의상 간격을 둔다
+        if article_text:
+            body_score = _match_score(title + " " + summary, best[1] + " " + article_text)
+            print(f"    - {press_name}: 기사원문 확인함, 본문비교유사도 {body_score:.2f}")
+            if body_score >= _MATCH_BODY_MIN:
+                return {"press": press_name, "title": best[1][:200], "link": best[2]}
+            print(f"    - {press_name}: 본문비교 기준 미달로 보류")
+        else:
+            # 기사 원문에 못 들어갔으면(차단/오류) 어쩔 수 없이 기존 방식(제목+미리보기)으로 대체 판단.
+            combined_score = _match_score(title, best[1] + " " + best[3])
+            print(f"    - {press_name}: 기사원문 확인 실패 → 제목+미리보기유사도 {combined_score:.2f}로 대체 판단")
+            if combined_score >= _MATCH_THRESHOLD:
+                return {"press": press_name, "title": best[1][:200], "link": best[2]}
     return None
 
 
@@ -573,7 +632,7 @@ def enrich_with_media(items):
     같은 항목을 재검색하지 않도록 한다."""
     now_iso = datetime.now(KST).isoformat()
     for it in items:
-        media = find_media_coverage(it["title"], it.get("agency", ""), it.get("summary", ""))
+        media = find_media_coverage(it["title"], it.get("agency", ""), it.get("summary", ""), it.get("date", ""))
         it["media_checked_at"] = now_iso
         if media:
             it["media_press"] = media["press"]
@@ -635,7 +694,7 @@ def recheck_pending_media(current_date: str) -> bool:
     for d, idx in picked:
         it = day_items[d][idx]
         print(f"  - ({d}) {it['title'][:40]}")
-        media = find_media_coverage(it["title"], it.get("agency", ""), it.get("summary", ""))
+        media = find_media_coverage(it["title"], it.get("agency", ""), it.get("summary", ""), it.get("date", ""))
         it["media_checked_at"] = now.isoformat()
         if media:
             it["media_press"] = media["press"]
