@@ -234,7 +234,11 @@ _SEARCH_HEADERS = {
 }
 
 
-_MATCH_THRESHOLD = 0.2   # 보도자료 제목의 글자쌍이 검색결과(제목+요약문)에 이 비율 이상 들어있어야 같은 기사로 인정 (너무 높이면 실제 기사도 놓침)
+_MATCH_THRESHOLD = 0.12  # 보도자료 제목의 글자쌍이 검색결과(제목+요약문)에 이 비율 이상 들어있어야 같은 기사로 인정
+# (원래 0.2였는데, 기자가 제목을 완전히 다른 포인트로 뽑는 경우(예: 보도자료 제목은
+# "...출범 1년..."인데 실제 기사 제목은 "...후보부지 내년 공모..."로, 같은 사안인데
+# 제목 유사도가 9.7%밖에 안 나오는 사례가 있었음) 너무 엄격해서 진짜 기사도 놓쳤다.
+# 오탐 방지는 아래 _MATCH_TITLE_MIN(제목 단독 최소 기준)이 따로 걸어준다.)
 _MATCH_TITLE_MIN = 0.08  # 제목만 비교했을 때 최소 이 정도는 겹쳐야 함 (미리보기 문구만으로 통과하는 오탐 방지용 하한선)
 
 
@@ -312,7 +316,14 @@ def _build_queries(title: str, agency: str, summary: str = ""):
                 # 있었다). 바로 앞에 "이하"가 붙은 따옴표는 제외한다.
                 if re.search(r"이하[,\s]*$", text[:m.start()]):
                     continue
-                matches.append((m.start(), m.end(), m.group(1)))
+                content = m.group(1)
+                # "'고준위 방사성폐기물 관리에 관한 특별법(이하 특별법)'"처럼, "이하 약칭"
+                # 정의가 따옴표 "안쪽" 끝부분에 붙는 경우도 있다(위는 따옴표 "앞"에 붙는
+                # 경우만 걸러냄). 이것도 검색어로는 불필요한 군더더기라 잘라낸다.
+                content = re.sub(r"\(이하[,\s]*[^)]*\)\s*$", "", content).strip()
+                if not content:
+                    continue
+                matches.append((m.start(), m.end(), content))
         matches.sort(key=lambda t: t[0])
         return [content for _, _, content in matches]
 
