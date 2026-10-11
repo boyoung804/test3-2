@@ -56,6 +56,9 @@
   .media-link { display:inline-block; margin-top:10px; font-size:12.5px; font-weight:600; color:#fff; background:var(--accent);
     padding:6px 12px; border-radius:8px; text-decoration:none; }
   .media-link:hover { background:#1d4ed8; }
+  .media-preview { margin-top:8px; font-size:12.5px; color:var(--text-secondary); display:flex; gap:6px; align-items:flex-start; }
+  .media-preview .mp-press { flex:0 0 auto; font-weight:700; color:var(--accent); }
+  .media-preview .mp-title { flex:1; }
   .latest-list { display:flex; flex-direction:column; gap:12px; }
   .view-toggle { display:inline-flex; border:1px solid var(--border); border-radius:8px; overflow:hidden; background:#fff; }
   .view-btn { border:none; background:#fff; padding:5px 12px; font-size:12.5px; cursor:pointer; color:var(--text-secondary); }
@@ -565,7 +568,12 @@
           <p class="card-title">${highlight(r.title, q)}</p>
         </div>
         ${r.summary ? `<p class="card-summary">${highlight(r.summary, q)}</p>` : ''}
-        ${r.media_link ? `<a class="media-link" href="${escapeHtml(r.media_link)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">뉴스 바로가기<span class="media-name">(${escapeHtml(r.media_press)})</span> ↗</a>` : ''}
+        ${r.media_link ? `
+          <div class="media-preview">
+            <span class="mp-press">[${escapeHtml(r.media_press)}]</span>
+            <span class="mp-title">${escapeHtml(r.media_title)}</span>
+          </div>
+          <a class="media-link" href="${escapeHtml(r.media_link)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">뉴스 바로가기 ↗</a>` : ''}
         <button class="match-btn ${r.media_press ? 'has-media' : 'no-media'}" data-match-link="${escapeHtml(r.link)}" onclick="event.stopPropagation()">${r.media_press ? '기사 수정' : '기사 등록'}</button>
       </div>`;
 
