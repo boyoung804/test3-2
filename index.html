@@ -608,7 +608,7 @@
             <span class="mp-title">${escapeHtml(r.media_title)}</span>
           </div>
           <a class="media-link" href="${escapeHtml(r.media_link)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">뉴스 바로가기 ↗</a>` : ''}
-        <button class="match-btn ${r.media_press ? 'has-media' : 'no-media'}" data-match-link="${escapeHtml(r.link)}" onclick="event.stopPropagation()">${r.media_press ? '기사 수정' : '기사 등록'}</button>
+        <button class="match-btn ${r.media_press ? 'has-media' : 'no-media'}" data-match-link="${escapeHtml(r.link)}">${r.media_press ? '기사 수정' : '기사 등록'}</button>
       </div>`;
 
     if (!filtered.length) {
