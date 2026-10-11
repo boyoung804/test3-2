@@ -1,6 +1,6 @@
 {
   "date": "2026-10-12",
-  "collected_at": "2026-10-12T07:59:16.279508+09:00",
+  "collected_at": "2026-10-12T08:12:52.113320+09:00",
   "agencies": [
     "대통령실",
     "국무조정실",
@@ -29,6 +29,18 @@
     "식품의약품안전처"
   ],
   "items": [
+    {
+      "date": "2026-10-12",
+      "agency": "식품의약품안전처",
+      "title": "[보도참고] 식약처, 국제인증표준품 분양 개시",
+      "summary": "",
+      "link": "https://www.korea.kr/briefing/pressReleaseView.do?newsId=156784790",
+      "unverified": false,
+      "media_press": "",
+      "media_title": "",
+      "media_link": "",
+      "media_checked_at": "2026-10-12T08:12:40.486145+09:00"
+    },
     {
       "date": "2026-10-12",
       "agency": "중소벤처기업부",
