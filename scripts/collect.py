@@ -236,6 +236,9 @@ _SEARCH_HEADERS = {
 
 _MATCH_TITLE_MIN = 0.08  # 제목만 비교했을 때 최소 이 정도는 겹쳐야 검증 단계로 넘어감 (완전 무관한 후보를 1차로 거름)
 _MATCH_BODY_MIN = 0.12   # 기사 원문(본문)까지 가져와서 보도자료 제목+요약문과 비교한 유사도 기준 (주 판정 기준)
+_MATCH_BODY_MIN_OVERLAP = 6  # 위 비율 기준과 별도로, 실제로 겹친 글자쌍 최소 개수. 제목이 짧으면
+                              # 전체 글자쌍 수가 적어 우연히 몇 개만 겹쳐도 비율 기준을 넘기 쉬워서,
+                              # "최소 이 정도는 겹쳐야 한다"는 절대 기준도 같이 둔다.
 _MATCH_THRESHOLD = 0.18  # 기사 원문을 못 가져왔을 때(차단/오류)만 쓰는 대체 기준 — 제목+미리보기 문구만으로 판단
 # (제목만 비교하면 "출범 1년" vs "후보부지 내년 공모"처럼 같은 사안인데 기자가 전혀
 # 다른 포인트로 제목을 뽑아 유사도가 9.7%까지 떨어지는 경우를 놓치고, 반대로 네이버
@@ -249,21 +252,78 @@ _MATCH_THRESHOLD = 0.18  # 기사 원문을 못 가져왔을 때(차단/오류)�
 # 대체 판단한다.)
 
 
-def _fetch_article_text(link: str, timeout: int = 8) -> str:
-    """기사 원문 페이지를 가져와 본문 비교용 텍스트를 뽑는다. meta description(또는
-    og:description)과 본문 앞쪽 문단 몇 개를 합쳐서 쓴다 — 언론사마다 본문 class가
-    달라서 정교하게 긁기보다, 이 정도면 보도자료 요약문과 비교하기에 충분하다.
-    접속 실패/차단이면 빈 문자열을 돌려주고, 호출하는 쪽에서 기존 방식으로 대체한다."""
+_ARTICLE_DATE_META_ATTRS = [
+    {"property": "article:published_time"},
+    {"property": "og:article:published_time"},
+    {"name": "article:published_time"},
+    {"property": "og:regDate"},
+    {"name": "regDate"},
+    {"name": "PUBLISH_DATETIME"},  # 연합뉴스가 실제로 쓰는 meta 중 하나
+]
+_ARTICLE_DATE_TEXT_PATTERNS = [
+    # "입력 2026.09.13. 15:30", "송고시간 2026-09-13 15:30:00" 등 기사 상단에
+    # 흔히 쓰는 표기. 연도-월-일 사이 구분자(.  또는 -)와 끝맺는 마침표 유무가
+    # 언론사마다 달라서 폭넓게 잡는다.
+    re.compile(r"(?:입력|송고)[^0-9]{0,6}(\d{4})[.\-](\d{1,2})[.\-](\d{1,2})"),
+]
+
+
+def _extract_article_page_date(soup, resp_text: str):
+    """기사 원문 페이지 자체에서 실제 게재 날짜를 뽑는다. 네이버 검색결과 페이지의
+    "N일 전" 같은 표시(_extract_result_date)보다 훨씬 믿을 만하다 — 검색결과
+    스니펫은 선택자가 살짝만 어긋나도 날짜를 통째로 못 읽어오지만, 기사 원문
+    페이지에는 거의 항상 meta 태그나 "입력/송고" 날짜 표기가 박혀있기 때문이다.
+    1) <meta property="article:published_time"> 등 표준/언론사별 meta 태그
+    2) JSON-LD(application/ld+json)의 "datePublished"
+    3) 본문 텍스트 속 "입력 YYYY.MM.DD." / "송고 YYYY-MM-DD" 패턴
+    순서로 시도하고, 다 실패하면 None을 돌려준다(호출하는 쪽에서 '모른다'로 처리)."""
+    for attrs in _ARTICLE_DATE_META_ATTRS:
+        tag = soup.find("meta", attrs=attrs)
+        if tag and tag.get("content"):
+            content = tag["content"]
+            m = re.search(r"(\d{4})[-.]?(\d{2})[-.]?(\d{2})", content)
+            if m:
+                try:
+                    return datetime(int(m.group(1)), int(m.group(2)), int(m.group(3))).date()
+                except ValueError:
+                    pass
+
+    for script in soup.find_all("script", attrs={"type": "application/ld+json"}):
+        text = script.string or script.get_text() or ""
+        m = re.search(r'"datePublished"\s*:\s*"(\d{4})-(\d{2})-(\d{2})', text)
+        if m:
+            try:
+                return datetime(int(m.group(1)), int(m.group(2)), int(m.group(3))).date()
+            except ValueError:
+                pass
+
+    body_text = soup.get_text(" ", strip=True)
+    for pat in _ARTICLE_DATE_TEXT_PATTERNS:
+        m = pat.search(body_text)
+        if m:
+            try:
+                return datetime(int(m.group(1)), int(m.group(2)), int(m.group(3))).date()
+            except ValueError:
+                continue
+    return None
+
+
+def _fetch_article_text(link: str, timeout: int = 8):
+    """기사 원문 페이지를 가져와 (본문 비교용 텍스트, 실제 게재 날짜)를 뽑는다.
+    텍스트는 meta description(또는 og:description)과 본문 앞쪽 문단 몇 개를
+    합쳐서 쓴다 — 언론사마다 본문 class가 달라서 정교하게 긁기보다, 이 정도면
+    보도자료 요약문과 비교하기에 충분하다. 날짜는 _extract_article_page_date 참고.
+    접속 실패/차단이면 ("", None)을 돌려주고, 호출하는 쪽에서 기존 방식으로 대체한다."""
     try:
         resp = requests.get(link, headers=_SEARCH_HEADERS, timeout=timeout)
     except requests.RequestException:
-        return ""
+        return "", None
     if resp.status_code != 200:
-        return ""
+        return "", None
     try:
         soup = BeautifulSoup(resp.text, "html.parser")
     except Exception:
-        return ""
+        return "", None
     parts = []
     for attrs in ({"name": "description"}, {"property": "og:description"}):
         tag = soup.find("meta", attrs=attrs)
@@ -271,7 +331,9 @@ def _fetch_article_text(link: str, timeout: int = 8) -> str:
             parts.append(tag["content"])
     paragraphs = soup.find_all("p")
     parts.append(" ".join(p.get_text(" ", strip=True) for p in paragraphs[:15]))
-    return re.sub(r"\s+", " ", " ".join(parts)).strip()[:1500]
+    text = re.sub(r"\s+", " ", " ".join(parts)).strip()[:1500]
+    article_date = _extract_article_page_date(soup, resp.text)
+    return text, article_date
 
 
 def _bigrams(text: str):
@@ -285,6 +347,86 @@ def _match_score(gov_title: str, result_text: str) -> float:
     if not g:
         return 0.0
     return len(g & _bigrams(result_text)) / len(g)
+
+
+def _match_score_with_overlap(gov_title: str, result_text: str):
+    """_match_score와 같은 비율(ratio)에 더해, 실제로 겹친 글자쌍 개수(overlap)도
+    같이 돌려준다. 보도자료 제목이 짧으면(예: 요약문이 비어있고 제목도 짧은 경우)
+    전체 글자쌍 수 자체가 적어서, 우연히 2~3개만 겹쳐도 비율이 쉽게 기준을 넘는
+    문제가 있다 — 실제 사례: "적극행정 우수공무원 시상"처럼 짧은 제목이, 완전히
+    무관한 기사 본문(긴 텍스트라 글자쌍 종류가 많음)과 우연한 글자쌍 몇 개만
+    겹쳤는데도 비율 기준(_MATCH_BODY_MIN)을 넘겨버렸다. 비율뿐 아니라 "최소 이만큼은
+    겹쳐야 한다"는 절대 개수 기준도 같이 둬서, 짧은 제목에서 비율만으로 통과되는
+    걸 막는다."""
+    g = _bigrams(gov_title)
+    if not g:
+        return 0.0, 0
+    overlap = len(g & _bigrams(result_text))
+    return overlap / len(g), overlap
+
+
+# 기관명/소속기관명 필터: 정부 보도자료를 다룬 기사라면 보통 그 부처나 소속기관
+# 이름이 어딘가에 등장한다. 반대로 기관명이 전혀 안 나오는 기사는 아예 다른 사안을
+# 다룬 기사일 가능성이 높다. 완전히 무관한 기사(예: "적극행정 우수공무원 시상"
+# 보도자료에 "빅테크 거물 할리우드 악당 캐릭터" 기사가 매칭된 사례)를 걸러내는
+# 추가 안전장치로 쓴다.
+#
+# "agency" 필드(예: 고용노동부)는 보도자료를 낸 상위 부처인데, 실제 보도자료는
+# 소속기관(예: 근로복지공단) 이름으로 다뤄지는 경우가 많아서, agency 하나만으로
+# 걸러내면 오히려 멀쩡한 매칭까지 막을 수 있다. 그래서 제목 안에서 "~부/~처/~청/
+# ~공단/~공사/~진흥원/~연구원/~위원회/~재단/~센터/~협회/~본부" 등으로 끝나는
+# 기관명 같은 단어도 같이 뽑아서 후보 집합에 넣는다.
+#
+# "공무원", "병원", "학원"처럼 기관명이 아닌데 우연히 같은 접미사로 끝나는 흔한
+# 단어가 섞이면 필터가 오히려 느슨해지므로(이 단어들은 아무 기사에나 나올 수
+# 있어서), 알려진 오탐 단어는 블록리스트로 제외한다.
+_ORG_NAME_PATTERN = re.compile(
+    r"[가-힣]{2,10}(?:부|처|청|원|공단|공사|진흥원|연구원|위원회|재단|센터|협회|본부|관리단|협의회|조합)"
+)
+_ORG_NAME_BLOCKLIST = {
+    "공무원", "병원", "학원", "내부", "외부", "정원", "지원", "자원", "원인", "원래",
+    "경우", "지난해", "올해", "전부", "일부", "전체", "자체", "구체", "대부분",
+}
+
+# 기사 제목은 보통 부처 정식명칭을 다 쓰지 않고 언론에서 통용되는 약칭을 쓴다
+# (예: "문화체육관광부" 대신 "문체부"). agency 필드는 항상 정식명칭이라, 정식명칭만
+# 기준으로 필터링하면 약칭을 쓴 멀쩡한 기사까지 "기관명이 안 보인다"며 걸러질 수
+# 있어서, 실제로 언론이 쓰는 약칭을 같이 등록해둔다. 약칭이 따로 없는 부처(예:
+# 외교부, 법무부처럼 이미 짧은 경우)는 정식명칭 하나로도 충분해서 목록에 없다.
+_AGENCY_ABBREVIATIONS = {
+    "국무조정실": {"국조실"},
+    "재정경제부": {"재경부"},
+    "과학기술정보통신부": {"과기정통부", "과기부"},
+    "행정안전부": {"행안부"},
+    "국가보훈부": {"보훈부"},
+    "문화체육관광부": {"문체부"},
+    "농림축산식품부": {"농식품부"},
+    "산업통상부": {"산업부", "산통부"},
+    "보건복지부": {"복지부"},
+    "기후에너지환경부": {"기후부", "환경부"},
+    "고용노동부": {"고용부", "노동부"},
+    "성평등가족부": {"여가부", "성가부"},
+    "국토교통부": {"국토부"},
+    "해양수산부": {"해수부"},
+    "중소벤처기업부": {"중기부"},
+    "인사혁신처": {"인사처"},
+    "식품의약품안전처": {"식약처"},
+}
+
+
+def _extract_org_terms(title: str, agency: str):
+    """보도자료 제목과 기관명에서, 실제 기사에 등장할 법한 '기관명 후보' 문자열
+    집합을 뽑는다. 빈 집합이면(뽑을 게 없으면) 호출하는 쪽에서 필터를 건너뛴다."""
+    terms = set()
+    if agency:
+        terms.add(agency)
+        terms.update(_AGENCY_ABBREVIATIONS.get(agency, set()))
+    for m in _ORG_NAME_PATTERN.finditer(title or ""):
+        token = m.group()
+        if token in _ORG_NAME_BLOCKLIST:
+            continue
+        terms.add(token)
+    return terms
 
 
 def _clean_query(title: str) -> str:
@@ -583,6 +725,8 @@ def find_media_coverage(title: str, agency: str = "", summary: str = "", pr_date
         except ValueError:
             pr_date_obj = None
 
+    org_terms = _extract_org_terms(title, agency)
+
     for press_name in MEDIA_PRIORITY:
         candidates = [r for r in merged if press_name in r[0]]
         if not candidates:
@@ -608,12 +752,22 @@ def find_media_coverage(title: str, agency: str = "", summary: str = "", pr_date
             print(f"    - {press_name}: 제목단독유사도 기준 미달로 제외")
             continue
 
-        article_text = _fetch_article_text(best[2])
+        article_text, article_date = _fetch_article_text(best[2])
         time.sleep(random.uniform(1.0, 2.0))  # 언론사 사이트에도 예의상 간격을 둔다
         if article_text:
-            body_score = _match_score(title + " " + summary, best[1] + " " + article_text)
-            print(f"    - {press_name}: 기사원문 확인함, 본문비교유사도 {body_score:.2f}")
-            if body_score >= _MATCH_BODY_MIN:
+            # 기사 원문 페이지 자체에서 읽은 날짜는 검색결과 스니펫보다 훨씬 믿을
+            # 만하므로, 여기서도 한 번 더 날짜를 확인한다. 검색결과 단계
+            # (위 pr_date_obj 필터)에서 날짜를 못 읽어 걸러지지 않고 넘어온 후보라도,
+            # 원문을 실제로 열어보면 날짜를 읽을 수 있는 경우가 많다.
+            if pr_date_obj and article_date and article_date != pr_date_obj:
+                print(f"    - {press_name}: 기사원문 날짜({article_date}) 보도자료 날짜({pr_date_obj})와 달라 제외")
+                continue
+            body_score, body_overlap = _match_score_with_overlap(title + " " + summary, best[1] + " " + article_text)
+            print(f"    - {press_name}: 기사원문 확인함, 본문비교유사도 {body_score:.2f} (겹친 글자쌍 {body_overlap}개)")
+            if body_score >= _MATCH_BODY_MIN and body_overlap >= _MATCH_BODY_MIN_OVERLAP:
+                if org_terms and not any(t in (best[1] + " " + article_text) for t in org_terms):
+                    print(f"    - {press_name}: 기관명({', '.join(sorted(org_terms))}) 기사에 안 보여 제외")
+                    continue
                 return {"press": press_name, "title": best[1][:200], "link": best[2]}
             print(f"    - {press_name}: 본문비교 기준 미달로 보류")
         else:
@@ -621,6 +775,9 @@ def find_media_coverage(title: str, agency: str = "", summary: str = "", pr_date
             combined_score = _match_score(title, best[1] + " " + best[3])
             print(f"    - {press_name}: 기사원문 확인 실패 → 제목+미리보기유사도 {combined_score:.2f}로 대체 판단")
             if combined_score >= _MATCH_THRESHOLD:
+                if org_terms and not any(t in (best[1] + " " + best[3]) for t in org_terms):
+                    print(f"    - {press_name}: 기관명({', '.join(sorted(org_terms))}) 기사에 안 보여 제외")
+                    continue
                 return {"press": press_name, "title": best[1][:200], "link": best[2]}
     return None
 
