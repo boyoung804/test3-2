@@ -1,6 +1,42 @@
 [
   {
     "date": "2026-10-13",
+    "agency": "과학기술정보통신부",
+    "title": "국가 AI 데이터의 체계적 관리·활용을 위한 ｢AI기본법｣, ｢데이터산업법｣ 개정안 국무회의 통과",
+    "summary": "｢AI기본법｣ 개정으로 정부사업 구축·산출 AI 학습용데이터의 확보·제공 확대\n｢데이터산업법｣ 개정으로 공공·민간 데이터 소재 정보의 통합 제공 강화",
+    "link": "https://www.korea.kr/briefing/pressReleaseView.do?newsId=156784979",
+    "unverified": false,
+    "media_press": "연합뉴스",
+    "media_title": "[ AI 픽] 정부사업으로 만든 AI 데이터, AI 허브로 모은다",
+    "media_link": "https://www.yna.co.kr/view/AKR20261013048200017?input=1195m",
+    "media_checked_at": "2026-10-13T13:31:18.964447+09:00"
+  },
+  {
+    "date": "2026-10-13",
+    "agency": "보건복지부",
+    "title": "최중증 발달장애인？희귀질환자 가족에 의한 활동지원 2028년까지 연장",
+    "summary": "최중증 발달장애인희귀질환자 가족에 의한 활동지원 2028년까지 연장\n「장애인활동 지원에 관한 법률 시행령」 일부개정령안 국무회의 의결",
+    "link": "https://www.korea.kr/briefing/pressReleaseView.do?newsId=156784976",
+    "unverified": false,
+    "media_press": "뉴시스",
+    "media_title": "최중증 발달 장애인 '가족 활동지원 ' 2028년까지 연장",
+    "media_link": "https://www.newsis.com/view/NISX20261012_0003822705",
+    "media_checked_at": "2026-10-13T13:31:18.964447+09:00"
+  },
+  {
+    "date": "2026-10-13",
+    "agency": "행정안전부",
+    "title": "반도체 메가프로젝트 전담국(局) 출범",
+    "summary": "산업부 직제 개정안 국무회의 의결(10.13)\n반도체 산업 경쟁력 강화 전담조직 '반도체혁신성장지원단' 신설",
+    "link": "https://www.korea.kr/briefing/pressReleaseView.do?newsId=156784978",
+    "unverified": false,
+    "media_press": "연합뉴스",
+    "media_title": "산업부, 반도체혁신성장지원단 신설…메가프로젝트 전담",
+    "media_link": "https://www.yna.co.kr/view/AKR20261013041600003?input=1195m",
+    "media_checked_at": "2026-10-13T13:31:18.964447+09:00"
+  },
+  {
+    "date": "2026-10-13",
     "agency": "문화체육관광부",
     "title": "뮤직비디오 '자체등급분류' 시대 열린다",
     "summary": "",
@@ -213,7 +249,7 @@
     "media_press": "",
     "media_title": "",
     "media_link": "",
-    "media_checked_at": "2026-10-13T10:31:07.506211+09:00"
+    "media_checked_at": "2026-10-13T13:32:05.878779+09:00"
   },
   {
     "date": "2026-10-13",
