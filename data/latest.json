@@ -1,6 +1,6 @@
 {
   "date": "2026-10-14",
-  "collected_at": "2026-10-14T07:51:30.465034+09:00",
+  "collected_at": "2026-10-14T08:15:09.119631+09:00",
   "agencies": [
     "대통령실",
     "국무조정실",
@@ -29,6 +29,18 @@
     "식품의약품안전처"
   ],
   "items": [
+    {
+      "date": "2026-10-14",
+      "agency": "식품의약품안전처",
+      "title": "가을 신학기 학교 급식시설·학교 주변 식품 취급업체 점검 결과…14곳 적발",
+      "summary": "",
+      "link": "https://www.korea.kr/briefing/pressReleaseView.do?newsId=156785049",
+      "unverified": false,
+      "media_press": "",
+      "media_title": "",
+      "media_link": "",
+      "media_checked_at": "2026-10-14T08:14:56.944667+09:00"
+    },
     {
       "date": "2026-10-14",
       "agency": "재정경제부",
