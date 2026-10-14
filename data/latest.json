@@ -1,6 +1,6 @@
 {
   "date": "2026-10-14",
-  "collected_at": "2026-10-14T17:00:15.971352+09:00",
+  "collected_at": "2026-10-14T17:31:56.321667+09:00",
   "agencies": [
     "대통령실",
     "국무조정실",
@@ -29,6 +29,30 @@
     "식품의약품안전처"
   ],
   "items": [
+    {
+      "date": "2026-10-14",
+      "agency": "법무부",
+      "title": "동포의 역사를 돌아보고, 미래 동포정책의 길을 찾다",
+      "summary": "법무부, 라종억 통일문화연구원 이사장 초청 제272회 ｢미래정책포럼｣ 개최-법무부(장관 직무대행 차관 이진수)는 2026. 10. 14.(수) 정부과천청사에서 라종억 통일문화연구원 이사장을 초청하여 ｢유나이티드 코리아를 향해서(Toward a United Korea)｣를 주제로 제272회 ｢미래정책포럼｣*을 개최했다.*법무부 출입국･외국인정책본부 직원들이 다양한 분야에 대한 이해를 넓히고 정책개발 역량을 높일 수 있도록 2007년 8월부터 각계 전문가와 이민자 등을 초청하여 개최해 온 강연회[※ 상세내용 첨부파일 참조]",
+      "link": "https://www.korea.kr/briefing/pressReleaseView.do?newsId=156785184",
+      "unverified": false,
+      "media_press": "",
+      "media_title": "",
+      "media_link": "",
+      "media_checked_at": "2026-10-14T17:30:30.664294+09:00"
+    },
+    {
+      "date": "2026-10-14",
+      "agency": "식품의약품안전처",
+      "title": "[보도참고] 잔류농약 기준 초과 검출된 '고춧가루' 회수 조치",
+      "summary": "",
+      "link": "https://www.korea.kr/briefing/pressReleaseView.do?newsId=156785183",
+      "unverified": false,
+      "media_press": "연합뉴스",
+      "media_title": "식약처, ' 잔류농약 기준 초과' 고춧가루 회수",
+      "media_link": "https://www.yna.co.kr/view/AKR20261014161400017?input=1195m",
+      "media_checked_at": "2026-10-14T17:30:30.664294+09:00"
+    },
     {
       "date": "2026-10-14",
       "agency": "국무조정실",
@@ -216,10 +240,10 @@
       "summary": "울산외국인근로자지원센터에 후원금 800만원 전달\n지역사회 적응·심리정서 지원과 산재 의료비에 활용 근로복지공단(이사장 박승흡)은 14일 이주노동자의 안정적인 지역사회 정착을 돕기 위해 울산외국인근로자지원센터에 후원금 800만원을 전달했다고 밝혔다.  후원금은 울산에 거주하는 이주노동자와 가족의 지역사회 적응과 심리·정서적 안정을 돕는 프로그램 운영에 사용될 예정이다. 산업재해로 긴급한 치료가 필요한 이주노동자의 치료비와 재활비 등 의료비 지원에도 활용된다.   앞서 공단은 지난 11일 울산외국인근로자지원센터에서 이주노동자를 대상으로",
       "link": "https://www.korea.kr/briefing/pressReleaseView.do?newsId=156785131",
       "unverified": false,
-      "media_press": "",
-      "media_title": "",
-      "media_link": "",
-      "media_checked_at": "2026-10-14T14:17:06.263080+09:00"
+      "media_press": "뉴스1",
+      "media_title": "박승흡 근로복지공단 이사장 취임 \"임금체불 '제로' 사회 앞당길 것\"",
+      "media_link": "https://www.news1.kr/local/ulsan/6306032",
+      "media_checked_at": "2026-10-14T17:31:00.627466+09:00"
     },
     {
       "date": "2026-10-14",
@@ -243,7 +267,7 @@
       "media_press": "",
       "media_title": "",
       "media_link": "",
-      "media_checked_at": "2026-10-14T14:17:06.263080+09:00"
+      "media_checked_at": "2026-10-14T17:31:00.627466+09:00"
     },
     {
       "date": "2026-10-14",
@@ -255,7 +279,7 @@
       "media_press": "",
       "media_title": "",
       "media_link": "",
-      "media_checked_at": "2026-10-14T14:17:06.263080+09:00"
+      "media_checked_at": "2026-10-14T17:31:00.627466+09:00"
     },
     {
       "date": "2026-10-14",
@@ -267,7 +291,7 @@
       "media_press": "",
       "media_title": "",
       "media_link": "",
-      "media_checked_at": "2026-10-14T14:17:06.263080+09:00"
+      "media_checked_at": "2026-10-14T17:31:00.627466+09:00"
     },
     {
       "date": "2026-10-14",
