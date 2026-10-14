@@ -1,6 +1,6 @@
 {
   "date": "2026-10-14",
-  "collected_at": "2026-10-14T14:53:18.518466+09:00",
+  "collected_at": "2026-10-14T15:26:12.549443+09:00",
   "agencies": [
     "대통령실",
     "국무조정실",
@@ -29,6 +29,42 @@
     "식품의약품안전처"
   ],
   "items": [
+    {
+      "date": "2026-10-14",
+      "agency": "외교부",
+      "title": "정의혜 차관보, 노르웨이 외교차관 면담(10.14.)",
+      "summary": "정의혜 차관보는 10.14.(수) 안드레아스 모츠펠트 크라비크(Andreas Motzfeldt Kravik) 노르웨이 외교차관 방한 계기 동인을 면담하고, ▴한-노르웨이 관계     ▴양국 간 실질협력 및 ▴주요 지역정세 등에 대해 폭넓게 의견을 교환하였다.        정 차관보는 한국전쟁 당시 노르웨이의 의료지원단 파견을 계기로 맺어진 양국간 특별한 인연을 언급하고, 지난 7월 NATO 정상회의 계기 한-노르웨이 정상회담이 개최되는 등 양국 간 고위급 교류가 활발히 이어지고 있는 것을 환영하였다.    또한 방산·수산·첨단기술 ",
+      "link": "https://www.korea.kr/briefing/pressReleaseView.do?newsId=156785141",
+      "unverified": false,
+      "media_press": "뉴스1",
+      "media_title": "한-노르웨이 외교차관 면담…방산·첨단기술 협력 확대 논의",
+      "media_link": "https://www.news1.kr/diplomacy/defense-diplomacy/6319934",
+      "media_checked_at": "2026-10-14T15:24:30.382515+09:00"
+    },
+    {
+      "date": "2026-10-14",
+      "agency": "국토교통부",
+      "title": "정비사업 조합 위법행위 특별현장점검 실시",
+      "summary": "공사비 산정·증액 과정의 적정성과 투명성 확보 및 법령 이행여부 확인 목적",
+      "link": "https://www.korea.kr/briefing/pressReleaseView.do?newsId=156785139",
+      "unverified": false,
+      "media_press": "뉴시스",
+      "media_title": "공사비 부풀리기 잡는다…국토부, 정비사업 조합 16곳 특별점검",
+      "media_link": "https://www.newsis.com/view/NISX20261014_0003825266",
+      "media_checked_at": "2026-10-14T15:24:30.382515+09:00"
+    },
+    {
+      "date": "2026-10-14",
+      "agency": "교육부",
+      "title": "교육부는 유아 대상 레벨테스트 금지 제도가 현장에서 실효성 있게 작동하도록  점검 및 조치를 강화하겠습니다",
+      "summary": "",
+      "link": "https://www.korea.kr/briefing/pressReleaseView.do?newsId=156785145",
+      "unverified": false,
+      "media_press": "",
+      "media_title": "",
+      "media_link": "",
+      "media_checked_at": "2026-10-14T15:24:30.382515+09:00"
+    },
     {
       "date": "2026-10-14",
       "agency": "고용노동부",
@@ -216,10 +252,10 @@
       "summary": "한성숙 국무총리, 울산 울주군 공장화재 관련 긴급지시□ 한성숙 국무총리는 10월 14일(수), 울산 울주군 공장화재 관련하여 아래와 같이 긴급 지시했다.ㅇ 소방청은 가용 소방력과 장비를 총 동원하여 화재진압까지 현장활동 및 인명피해 방지에 최선을 다할 것ㅇ 행정안전부, 경찰청, 지방정부 등 관계기관은 현장지원 및 안전관리 등 국민안전에 만전을 기할 것ㅇ 현장 위험요인을 철저히 관리하고 소방공무원 안전에도 만전을 기할 것…",
       "link": "https://www.korea.kr/briefing/pressReleaseView.do?newsId=156785101",
       "unverified": false,
-      "media_press": "",
-      "media_title": "",
-      "media_link": "",
-      "media_checked_at": "2026-10-14T12:03:51.879687+09:00"
+      "media_press": "연합뉴스",
+      "media_title": "韓 총리 , 울주군 공장 화재 \"인명피해 방지 최선\" 긴급지시",
+      "media_link": "https://www.yna.co.kr/view/AKR20261014096700001?input=1195m",
+      "media_checked_at": "2026-10-14T15:25:24.234271+09:00"
     },
     {
       "date": "2026-10-14",
