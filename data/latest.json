@@ -1,6 +1,6 @@
 {
   "date": "2026-10-15",
-  "collected_at": "2026-10-15T07:46:01.734610+09:00",
+  "collected_at": "2026-10-15T08:11:49.771385+09:00",
   "agencies": [
     "대통령실",
     "국무조정실",
@@ -28,5 +28,30 @@
     "법제처",
     "식품의약품안전처"
   ],
-  "items": []
+  "items": [
+    {
+      "date": "2026-10-15",
+      "agency": "식품의약품안전처",
+      "title": "[보도참고] 식약처, 의약품 허가 신청을 위한 최신 전자공통기술문서(eCTD v4.0) 서비스 개시",
+      "summary": "",
+      "link": "https://www.korea.kr/briefing/pressReleaseView.do?newsId=156785231",
+      "unverified": false,
+      "media_press": "",
+      "media_title": "",
+      "media_link": "",
+      "media_checked_at": "2026-10-15T08:11:27.857065+09:00"
+    },
+    {
+      "date": "2026-10-15",
+      "agency": "식품의약품안전처",
+      "title": "[보도참고] '해외직구 식품 올바로 웹앱' 국민이 직접 써보고 완성도 높인다",
+      "summary": "",
+      "link": "https://www.korea.kr/briefing/pressReleaseView.do?newsId=156785230",
+      "unverified": false,
+      "media_press": "",
+      "media_title": "",
+      "media_link": "",
+      "media_checked_at": "2026-10-15T08:11:27.857065+09:00"
+    }
+  ]
 }
