@@ -1,6 +1,6 @@
 {
   "date": "2026-10-15",
-  "collected_at": "2026-10-15T10:56:51.872784+09:00",
+  "collected_at": "2026-10-15T11:27:24.988824+09:00",
   "agencies": [
     "대통령실",
     "국무조정실",
@@ -228,10 +228,10 @@
       "summary": "",
       "link": "https://www.korea.kr/briefing/pressReleaseView.do?newsId=156785231",
       "unverified": false,
-      "media_press": "",
-      "media_title": "",
-      "media_link": "",
-      "media_checked_at": "2026-10-15T08:11:27.857065+09:00"
+      "media_press": "뉴시스",
+      "media_title": "\" 의약품 허가 효율 향상\"…전자공통기술문서 개시",
+      "media_link": "https://www.newsis.com/view/NISX20261015_0003826669",
+      "media_checked_at": "2026-10-15T11:26:32.473272+09:00"
     },
     {
       "date": "2026-10-15",
@@ -240,10 +240,10 @@
       "summary": "",
       "link": "https://www.korea.kr/briefing/pressReleaseView.do?newsId=156785230",
       "unverified": false,
-      "media_press": "",
-      "media_title": "",
-      "media_link": "",
-      "media_checked_at": "2026-10-15T08:11:27.857065+09:00"
+      "media_press": "연합뉴스",
+      "media_title": "[바이오스냅] 식약처, ' 해외직구 식품 올바로 웹앱' 테스트 행사",
+      "media_link": "https://www.yna.co.kr/view/AKR20261015052500017?input=1195m",
+      "media_checked_at": "2026-10-15T11:26:32.473272+09:00"
     }
   ]
 }
