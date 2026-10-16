@@ -1,6 +1,6 @@
 {
   "date": "2026-10-16",
-  "collected_at": "2026-10-16T12:24:26.910670+09:00",
+  "collected_at": "2026-10-16T13:01:03.371419+09:00",
   "agencies": [
     "대통령실",
     "국무조정실",
@@ -29,6 +29,18 @@
     "식품의약품안전처"
   ],
   "items": [
+    {
+      "date": "2026-10-16",
+      "agency": "국무조정실",
+      "title": "[보도자료] '대한민국 대전환 제2차 국민토론회-충청에서 돌봄을 묻다' 개최 결과",
+      "summary": "사회대개혁위원회, '대한민국 대전환 제2차 국민토론회-충청에서 돌봄을 묻다' 개최\n돌봄 노동자를 포함한 사회서비스 종사자의 저임금 일자리 문제 개선 주장",
+      "link": "https://www.korea.kr/briefing/pressReleaseView.do?newsId=156785439",
+      "unverified": false,
+      "media_press": "",
+      "media_title": "",
+      "media_link": "",
+      "media_checked_at": "2026-10-16T12:59:55.202488+09:00"
+    },
     {
       "date": "2026-10-16",
       "agency": "행정안전부",
@@ -135,7 +147,7 @@
       "media_press": "",
       "media_title": "",
       "media_link": "",
-      "media_checked_at": "2026-10-16T09:38:13.310608+09:00"
+      "media_checked_at": "2026-10-16T13:00:13.755922+09:00"
     },
     {
       "date": "2026-10-16",
@@ -147,7 +159,7 @@
       "media_press": "",
       "media_title": "",
       "media_link": "",
-      "media_checked_at": "2026-10-16T09:38:13.310608+09:00"
+      "media_checked_at": "2026-10-16T13:00:13.755922+09:00"
     },
     {
       "date": "2026-10-16",
@@ -159,7 +171,7 @@
       "media_press": "",
       "media_title": "",
       "media_link": "",
-      "media_checked_at": "2026-10-16T09:38:13.310608+09:00"
+      "media_checked_at": "2026-10-16T13:00:13.755922+09:00"
     },
     {
       "date": "2026-10-16",
@@ -171,7 +183,7 @@
       "media_press": "",
       "media_title": "",
       "media_link": "",
-      "media_checked_at": "2026-10-16T09:38:13.310608+09:00"
+      "media_checked_at": "2026-10-16T13:00:13.755922+09:00"
     },
     {
       "date": "2026-10-16",
