@@ -1,6 +1,6 @@
 {
   "date": "2026-10-18",
-  "collected_at": "2026-10-18T08:31:46.327147+09:00",
+  "collected_at": "2026-10-18T10:30:16.279469+09:00",
   "agencies": [
     "대통령실",
     "국무조정실",
@@ -29,6 +29,30 @@
     "식품의약품안전처"
   ],
   "items": [
+    {
+      "date": "2026-10-18",
+      "agency": "국가보훈부",
+      "title": "보훈부， 복지부와 국립묘지 외 안장시설 미지원 대상자 1,740명 발굴",
+      "summary": "261018 보도자료(보훈부， 복지부와 국립묘지 외 안장시설 미지원 대상자 1,740명 발굴)최종",
+      "link": "https://www.korea.kr/briefing/pressReleaseView.do?newsId=156785545",
+      "unverified": false,
+      "media_press": "뉴시스",
+      "media_title": "보훈부, '안장시설 사용료' 미지원 국가유공자 발굴·지원… 복지부와 협... 새 창 열림",
+      "media_link": "https://www.newsis.com/view/NISX20261018_0003830298",
+      "media_checked_at": "2026-10-18T10:29:48.429538+09:00"
+    },
+    {
+      "date": "2026-10-18",
+      "agency": "교육부",
+      "title": "데이터로 읽는 우리 교육 제16호 발간",
+      "summary": "OECD 교육지표를 통해 본 우리나라 고등교육의 특성",
+      "link": "https://www.korea.kr/briefing/pressReleaseView.do?newsId=156785544",
+      "unverified": false,
+      "media_press": "",
+      "media_title": "",
+      "media_link": "",
+      "media_checked_at": "2026-10-18T10:29:48.429538+09:00"
+    },
     {
       "date": "2026-10-18",
       "agency": "문화체육관광부",
