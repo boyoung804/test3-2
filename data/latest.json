@@ -1,6 +1,6 @@
 {
   "date": "2026-10-19",
-  "collected_at": "2026-10-19T06:56:28.447667+09:00",
+  "collected_at": "2026-10-19T09:05:46.622676+09:00",
   "agencies": [
     "대통령실",
     "국무조정실",
@@ -29,6 +29,54 @@
     "식품의약품안전처"
   ],
   "items": [
+    {
+      "date": "2026-10-19",
+      "agency": "산업통상부",
+      "title": "총 3조원 규모 앰코 광주 공장 증축 착공식 개최",
+      "summary": "서남권 반도체 메가프로젝트 본격 가동을 위한 첫 신호탄\n산업통상부(장관 김정관, 이하 '산업부') 이민우 산업성장실장은 10월 19일(월) 앰코테크놀로지코리아(이하 앰코) 광주사업장에서 열린 「앰코 광주공장 증축 착공식」에 참석하여 착공을 축하하고, 서남권 첨단반도체 투자 이행을 적극 지원하겠다고 밝혔다. 이날 착공식에는 산업부 이민우 산업성장실장, 민형배 전남광주특별시장, 앰코 본사 경영진, 글로벌 고객사 관계자 등이 참석했다. 이번 증축은 지난 6월 30일 「서남권 첨단산업 발전비전 국민보고회」에서 발표된 앰코의 광주 투자계획이",
+      "link": "https://www.korea.kr/briefing/pressReleaseView.do?newsId=156785593",
+      "unverified": false,
+      "media_press": "",
+      "media_title": "",
+      "media_link": "",
+      "media_checked_at": "2026-10-19T09:04:47.098254+09:00"
+    },
+    {
+      "date": "2026-10-19",
+      "agency": "문화체육관광부",
+      "title": "'2026 한복문화주간', 전국 곳곳에서 한복의 멋 즐기세요",
+      "summary": "",
+      "link": "https://www.korea.kr/briefing/pressReleaseView.do?newsId=156785590",
+      "unverified": false,
+      "media_press": "연합뉴스",
+      "media_title": "\" 한복 은 우리 삶과 함께한 문화 유산\"…19∼25일 ' 한복문화주간 ' 새 창 열림",
+      "media_link": "https://www.yna.co.kr/view/AKR20261019019200005?input=1195m",
+      "media_checked_at": "2026-10-19T09:04:47.098254+09:00"
+    },
+    {
+      "date": "2026-10-19",
+      "agency": "식품의약품안전처",
+      "title": "[보도참고] 첨단바이오의약품 개발, 필요한 규제정보를 한눈에 확인하세요",
+      "summary": "",
+      "link": "https://www.korea.kr/briefing/pressReleaseView.do?newsId=156785589",
+      "unverified": false,
+      "media_press": "",
+      "media_title": "",
+      "media_link": "",
+      "media_checked_at": "2026-10-19T09:04:47.098254+09:00"
+    },
+    {
+      "date": "2026-10-19",
+      "agency": "식품의약품안전처",
+      "title": "일교차 큰 가을 단풍 나들이, 식중독 주의하세요!",
+      "summary": "",
+      "link": "https://www.korea.kr/briefing/pressReleaseView.do?newsId=156785588",
+      "unverified": false,
+      "media_press": "",
+      "media_title": "",
+      "media_link": "",
+      "media_checked_at": "2026-10-19T09:04:47.098254+09:00"
+    },
     {
       "date": "2026-10-19",
       "agency": "국토교통부",
