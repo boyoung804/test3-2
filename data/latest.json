@@ -1,6 +1,6 @@
 {
   "date": "2026-10-21",
-  "collected_at": "2026-10-21T07:25:27.671222+09:00",
+  "collected_at": "2026-10-21T09:50:04.041887+09:00",
   "agencies": [
     "대통령실",
     "국무조정실",
@@ -28,5 +28,66 @@
     "법제처",
     "식품의약품안전처"
   ],
-  "items": []
+  "items": [
+    {
+      "date": "2026-10-21",
+      "agency": "보건복지부",
+      "title": "AI 혁신 혜택의 공평한 접근 약속... 보건복지부·세계보건기구, ？AI 헬스케어 서울선언문？ 공동 발표",
+      "summary": "AI 헬스케어 서울선언문 공동 발표\n「2026 세계 바이오 서밋」 개최 (10.21.~22.)",
+      "link": "https://www.korea.kr/briefing/pressReleaseView.do?newsId=156785925",
+      "unverified": false,
+      "media_press": "연합뉴스",
+      "media_title": "세계 바이오 리더 집결…정부·WHO 'AI헬스케어 서울선언' 채택 새 창 열림",
+      "media_link": "https://www.yna.co.kr/view/AKR20261020070300530?input=1195m",
+      "media_checked_at": "2026-10-21T09:48:51.650144+09:00"
+    },
+    {
+      "date": "2026-10-21",
+      "agency": "산업통상부",
+      "title": "론자·징동닷컴 등 글로벌 바이어 530개사 한자리에, 「2026 수출 붐업코리아」 개막",
+      "summary": "5극 3특 모두의 수출지원을 위해 50% 이상 지방기업 배정\n바이오·소비재 등 신성장산업 집중지원, M.AX 컨퍼런스 연계",
+      "link": "https://www.korea.kr/briefing/pressReleaseView.do?newsId=156785920",
+      "unverified": false,
+      "media_press": "연합뉴스",
+      "media_title": "글로벌 바이어 530곳 킨텍스 집결…'수출 붐업코리아' 개막 새 창 열림",
+      "media_link": "https://www.yna.co.kr/view/AKR20261020159500003?input=1195m",
+      "media_checked_at": "2026-10-21T09:48:51.650144+09:00"
+    },
+    {
+      "date": "2026-10-21",
+      "agency": "문화체육관광부",
+      "title": "'뤼미에르 파트너십', '국중박 분장놀이' 등  '케이-컬처' 위상 높인 직원 40명에게 5차 특별성과 포상",
+      "summary": "",
+      "link": "https://www.korea.kr/briefing/pressReleaseView.do?newsId=156785915",
+      "unverified": false,
+      "media_press": "뉴시스",
+      "media_title": "'국중박 분장놀이' 전국 규모로 키웠다…문체부 특별포상 새 창 열림",
+      "media_link": "https://www.newsis.com/view/NISX20261021_0003834412",
+      "media_checked_at": "2026-10-21T09:48:51.650144+09:00"
+    },
+    {
+      "date": "2026-10-21",
+      "agency": "식품의약품안전처",
+      "title": "[보도참고] 식약처, 천연물 기반 한약·화장품·건강기능식품 분야 연구동향 함께 살핀다",
+      "summary": "",
+      "link": "https://www.korea.kr/briefing/pressReleaseView.do?newsId=156785917",
+      "unverified": false,
+      "media_press": "뉴시스",
+      "media_title": "\" 천연물 제품개발 동향\"… 식약처, 심포지엄 개최 새 창 열림",
+      "media_link": "https://www.newsis.com/view/NISX20261021_0003834448",
+      "media_checked_at": "2026-10-21T09:48:51.650144+09:00"
+    },
+    {
+      "date": "2026-10-21",
+      "agency": "식품의약품안전처",
+      "title": "[보도참고] 식약처, 의사의 의료용 마약류 주사제 셀프처방 및 투약 금지 성분 확대 추진",
+      "summary": "",
+      "link": "https://www.korea.kr/briefing/pressReleaseView.do?newsId=156785916",
+      "unverified": false,
+      "media_press": "연합뉴스",
+      "media_title": "의사 '셀프 투약' 금지 대폭 확대…마약류 1종→22종 새 창 열림",
+      "media_link": "https://www.yna.co.kr/view/AKR20261021024400017?input=1195m",
+      "media_checked_at": "2026-10-21T09:48:51.650144+09:00"
+    }
+  ]
 }
