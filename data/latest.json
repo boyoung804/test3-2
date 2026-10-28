@@ -1,6 +1,6 @@
 {
   "date": "2026-10-28",
-  "collected_at": "2026-10-28T07:09:25.060238+09:00",
+  "collected_at": "2026-10-28T10:26:07.213033+09:00",
   "agencies": [
     "대통령실",
     "국무조정실",
@@ -29,6 +29,126 @@
     "식품의약품안전처"
   ],
   "items": [
+    {
+      "date": "2026-10-28",
+      "agency": "과학기술정보통신부",
+      "title": "3대 Mega·7대 Seed 프로젝트의 조력자, 연구산업! - 「국제 연구산업 컨벤션 2026」 개최 -",
+      "summary": "",
+      "link": "https://www.korea.kr/briefing/pressReleaseView.do?newsId=156786752",
+      "unverified": false,
+      "media_press": "연합뉴스",
+      "media_title": "국내외 134개 기업·기관, 수원서 연구산업 기술 선보인다 새 창 열림",
+      "media_link": "https://www.yna.co.kr/view/AKR20261028054000017?input=1195m",
+      "media_checked_at": "2026-10-28T10:23:48.487172+09:00"
+    },
+    {
+      "date": "2026-10-28",
+      "agency": "재정경제부",
+      "title": "요소수·요소, 주사기·주사침 매점매석행위 금지 고시 종료",
+      "summary": "촉매제(요소수) 및 그 원료인 요소 매점매석행위 금지 등에 관한 고시 및 주사기 및 주사침 매점석행위 금지 등에 관한 고시를 10.31일자로 종료합니다. * 자세한 내용은 첨부파일을 참고해 주시기 바랍니다.문의. 재정경제부 경제정책국 물가정책과 박지훈 (044-215-2831)",
+      "link": "https://www.korea.kr/briefing/pressReleaseView.do?newsId=156786757",
+      "unverified": false,
+      "media_press": "",
+      "media_title": "",
+      "media_link": "",
+      "media_checked_at": "2026-10-28T10:23:48.487172+09:00"
+    },
+    {
+      "date": "2026-10-28",
+      "agency": "통일부",
+      "title": "비대면 마라톤 「평화 이어달리기 챌린지」 개최",
+      "summary": "통일부, 비대면 마라톤｢평화 이어달리기 챌린지｣ 개최-10.29.~11.25.(4주간) 모바일 앱(워크온) 통해 국민 누구나 참여-4.27km, 6.15km 등 남북관계 상징 거리 달리기, 1,200km 단체 달리기 등 진행【관련 국정과제】 117. 국민과 함께하는 한반도 평화·통일정책 추진 □통일부는 10월 29일부터 11월 25일까지 4주간 비대면 마라톤 행사 ｢평화 이어달리기 챌린지｣를 진행한다.o올해 처음 개최되는 ｢평화 이어달리기 챌린지｣의 공식 슬로건은 \"함께 달리는 오늘, 이어지는 평화공존의 길\"로, 국민 한 사람 한 ",
+      "link": "https://www.korea.kr/briefing/pressReleaseView.do?newsId=156786750",
+      "unverified": false,
+      "media_press": "뉴스1",
+      "media_title": "\" 함께 달리며 평화 잇는다\"… 통일부 , 비대면 마라톤 개최 새 창 열림",
+      "media_link": "https://www.news1.kr/diplomacy/unikorea/6334462",
+      "media_checked_at": "2026-10-28T10:23:48.487172+09:00"
+    },
+    {
+      "date": "2026-10-28",
+      "agency": "통일부",
+      "title": "「2026 국제 한반도 포럼」 일본세미나 개최(10.29.)",
+      "summary": "통일부, 「2026 국제 한반도 포럼」 일본세미나 개최(10.29.)\n한반도 평화공존과 상생의 한일관계를 위한 협력방안 모색",
+      "link": "https://www.korea.kr/briefing/pressReleaseView.do?newsId=156786749",
+      "unverified": false,
+      "media_press": "연합뉴스",
+      "media_title": "\" 한반도 평화와 한일협력\"…29일 日서 국제한반도포럼 새 창 열림",
+      "media_link": "https://www.yna.co.kr/view/AKR20261028049400504?input=1195m",
+      "media_checked_at": "2026-10-28T10:23:48.487172+09:00"
+    },
+    {
+      "date": "2026-10-28",
+      "agency": "산업통상부",
+      "title": "EU 산업가속화법 민관 TF, 대응체계 구축에서 현지 공동대응으로",
+      "summary": "유럽의회·집행위 대상 연쇄 아웃리치 결과 공유, 민관 공동대응 전략 구체화\n11월 통상교섭본부장 브뤼셀 방문, 유럽의회 핵심 인사 공략",
+      "link": "https://www.korea.kr/briefing/pressReleaseView.do?newsId=156786748",
+      "unverified": false,
+      "media_press": "연합뉴스",
+      "media_title": "EU 산업가속화법 TF, 현지대응 강화…통상본부장, 브뤼셀 찾는다 새 창 열림",
+      "media_link": "https://www.yna.co.kr/view/AKR20261027184000003?input=1195m",
+      "media_checked_at": "2026-10-28T10:23:48.487172+09:00"
+    },
+    {
+      "date": "2026-10-28",
+      "agency": "산업통상부",
+      "title": "제2차 한-인니 CEPA 공동위원회 개최",
+      "summary": "한-인도네시아 CEPA 이행 현황 점검 및 통상 현안 논의\n산업통상부(장관 김정관)는 제2차 한-인도네시아 포괄적경제동반자협정(CEPA)* 공동위원회를 28일 서울에서 개최했다. 이번 회의에는 우리측 박근오 산업통상부 통상협정정책관과 인도네시아측은 조니 마르타(Johni Martha) 무역부 국제통상협상국장을 각각 수석대표로 하는 양측 대표단이 참석했다. * CEPA(Comprehensive Economic Partnership Agreement): 협정 당사국간 상품·서비스 교역의 자유화뿐만 아니라 투자·경제협력 등 경제 관계 전",
+      "link": "https://www.korea.kr/briefing/pressReleaseView.do?newsId=156786747",
+      "unverified": false,
+      "media_press": "연합뉴스",
+      "media_title": "한 · 인니 , 3년 만에 2차 CEPA 공동위원회…이행 현황 점검 새 창 열림",
+      "media_link": "https://www.yna.co.kr/view/AKR20261027183600003?input=1195m",
+      "media_checked_at": "2026-10-28T10:23:48.487172+09:00"
+    },
+    {
+      "date": "2026-10-28",
+      "agency": "산업통상부",
+      "title": "소부장과 뿌리기술, 산업을 연결하는 힘",
+      "summary": "2026년 소재부품장비-뿌리기술 대전 개최 -산업부, 뿌리산업의 차세대 경영인들과 공정혁신의 해법 모색 -'26년 소재·부품·장비 으뜸기업 21개사 지정서 수여\n산업통상부(장관 김정관, 이하 산업부)는 10월 28일(수)부터 30일(금)까지 일산 킨텍스 제1전시장에서 ｢2026 소재·부품·장비-뿌리기술대전｣이 개최된다고 밝혔다. 「소재·부품·장비-뿌리기술대전」은 산업의 성과 공유와 기업 간 교류·협력 촉진을 위해 소재부품기술상 시상식과 유관 행사를 통합하여 2011년부터 매년 개최해 온 소부장·뿌리산업 종합박람회다. 이번 행사는 '",
+      "link": "https://www.korea.kr/briefing/pressReleaseView.do?newsId=156786746",
+      "unverified": false,
+      "media_press": "연합뉴스",
+      "media_title": "소부장 뿌리기술대전 개막…김병석 한미반도체 상무 은탑훈장 새 창 열림",
+      "media_link": "https://www.yna.co.kr/view/AKR20261027172900003?input=1195m",
+      "media_checked_at": "2026-10-28T10:23:48.487172+09:00"
+    },
+    {
+      "date": "2026-10-28",
+      "agency": "산업통상부",
+      "title": "세계를 잇는 바이오, 협력에서 사업화까지",
+      "summary": "'바이오플러스-인터펙스 코리아 2026' 개막\n개막식 : 10.28(수) 09:30, 코엑스  산업통상부(장관 김정관)는 한국바이오협회(회장 고한승) 주최로 10월 28일에서 30일까지 서울 코엑스에서「바이오플러스-인터펙스 코리아 2026」(이하 'BIX')를 개최한다고 밝혔다. 국내 대표 바이오 분야 행사인 BIX에는 올해 300여 개 기업이 참여하여 'Connecting the Global Biopharma Value Chain'을 주제로, 전시와 컨퍼런스, 비즈니스 파트너링, 오픈 스테이지 및 네트워킹 등 다양한 프로그램을 통",
+      "link": "https://www.korea.kr/briefing/pressReleaseView.do?newsId=156786745",
+      "unverified": false,
+      "media_press": "연합뉴스",
+      "media_title": "바이오플러스-인터펙스 코리아 개막…300여개 기업 참여 새 창 열림",
+      "media_link": "https://www.yna.co.kr/view/AKR20261027183700003?input=1195m",
+      "media_checked_at": "2026-10-28T10:23:48.487172+09:00"
+    },
+    {
+      "date": "2026-10-28",
+      "agency": "문화체육관광부",
+      "title": "문체부 장관, 대중음악 전문 공연장 '서울아레나' 건설 현장 방문",
+      "summary": "",
+      "link": "https://www.korea.kr/briefing/pressReleaseView.do?newsId=156786732",
+      "unverified": false,
+      "media_press": "연합뉴스",
+      "media_title": "최휘영 장관, '패노메논' 열릴 서울아레나 건설현장 점검 새 창 열림",
+      "media_link": "https://www.yna.co.kr/view/AKR20261028019900005?input=1195m",
+      "media_checked_at": "2026-10-28T10:23:48.487172+09:00"
+    },
+    {
+      "date": "2026-10-28",
+      "agency": "식품의약품안전처",
+      "title": "[보도참고] 식약처, 최신의 디지털의료기기 허가심사 기준 짚어준다",
+      "summary": "",
+      "link": "https://www.korea.kr/briefing/pressReleaseView.do?newsId=156786731",
+      "unverified": false,
+      "media_press": "",
+      "media_title": "",
+      "media_link": "",
+      "media_checked_at": "2026-10-28T10:23:48.487172+09:00"
+    },
     {
       "date": "2026-10-28",
       "agency": "기후에너지환경부",
