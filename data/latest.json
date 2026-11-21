@@ -1,6 +1,6 @@
 {
   "date": "2026-11-21",
-  "collected_at": "2026-11-21T11:48:00.298123+09:00",
+  "collected_at": "2026-11-21T19:19:07.242850+09:00",
   "agencies": [
     "대통령실",
     "국무조정실",
@@ -32,14 +32,38 @@
     {
       "date": "2026-11-21",
       "agency": "국토교통부",
-      "title": "[참고] 경부선 소정리역 화물열차 탈선 사고 대응에 만전을 기하고 있습니다.",
-      "summary": "",
-      "link": "https://www.korea.kr/briefing/pressReleaseView.do?newsId=156790144",
+      "title": "[차관동정] 정의경 제2차관, \"안전을 최우선으로 탈선 현장 복구 및 이용객 불편 최소화할 것\"",
+      "summary": "21일 오후 탈선사고 현장 점검 및 가용한 대체열차 투입 당부",
+      "link": "https://www.korea.kr/briefing/pressReleaseView.do?newsId=156790153",
       "unverified": false,
       "media_press": "",
       "media_title": "",
       "media_link": "",
-      "media_checked_at": "2026-11-21T11:46:55.323886+09:00"
+      "media_checked_at": "2026-11-21T19:17:47.839322+09:00"
+    },
+    {
+      "date": "2026-11-21",
+      "agency": "과학기술정보통신부",
+      "title": "우리 사회의 인공지능을 생각하고 토론하는 축제의 장, ｢AI 인사이트 페스티벌 시상식｣ 개최",
+      "summary": "인공지능 기술에 대한 비판적 사고와 창의적 관점을 높이기 위한 '토론대회'부터 '논문·아이디어 공모전', '우수도서 선정'까지 한자리에",
+      "link": "https://www.korea.kr/briefing/pressReleaseView.do?newsId=156790152",
+      "unverified": false,
+      "media_press": "연합뉴스",
+      "media_title": "AI 시대 인간의 판단·책임 논한다…'AI 인사이트 페스티벌' 새 창 열림",
+      "media_link": "https://www.yna.co.kr/view/AKR20261120120200017?input=1195m",
+      "media_checked_at": "2026-11-21T19:17:47.839322+09:00"
+    },
+    {
+      "date": "2026-11-21",
+      "agency": "국토교통부",
+      "title": "[참고] 경부선 소정리역 화물열차 탈선 사고 대응에 만전을 기하고 있습니다.",
+      "summary": "",
+      "link": "https://www.korea.kr/briefing/pressReleaseView.do?newsId=156790144",
+      "unverified": false,
+      "media_press": "연합뉴스",
+      "media_title": "국토부, 경부선 화물열차 탈선 현장 점검…\"재발방지대책 강구\" 새 창 열림",
+      "media_link": "https://www.yna.co.kr/view/AKR20261121044500003?input=1195m",
+      "media_checked_at": "2026-11-21T19:18:16.770967+09:00"
     },
     {
       "date": "2026-11-21",
